@@ -144,8 +144,67 @@ const getAllBookings = async (req, res) => {
     }
 };
 
+const updateBookingStatus = async (req, res) => {
+    try {
+        const { status } = req.body;
+        const { id } = req.params;
+
+        // Validate status
+        const allowedStatuses = [
+            "pending",
+            "confirmed",
+            "completed",
+            "cancelled"
+        ];
+
+        if (!status) {
+            return res.status(400).json({
+                success: false,
+                message: "Status is required."
+            });
+        }
+
+        if (!allowedStatuses.includes(status)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid booking status."
+            });
+        }
+
+        // Find booking
+        const booking = await Booking.findById(id);
+
+        if (!booking) {
+            return res.status(404).json({
+                success: false,
+                message: "Booking not found."
+            });
+        }
+
+        // Update status
+        booking.status = status;
+
+        await booking.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Booking status updated successfully.",
+            booking
+        });
+
+    } catch (error) {
+        console.log("UPDATE BOOKING STATUS ERROR:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
 module.exports = {
     createBooking,
     getMyBookings,
-    getAllBookings
+    getAllBookings,
+    updateBookingStatus
 };
