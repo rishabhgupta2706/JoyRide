@@ -7,10 +7,12 @@ const { getMyBookings } = require("../controllers/bookingController");
 const { getAllBookings } = require("../controllers/bookingController");
 const  adminOnly = require("../middleware/roleMiddleware");
 const { updateBookingStatus } = require("../controllers/bookingController");
+const { cancelBooking } = require("../controllers/bookingController");
 
 router.get("/", protect, adminOnly, getAllBookings);
 router.post("/", protect, createBooking);
 router.get("/my", protect, getMyBookings);
 router.patch("/:id/status", protect, adminOnly, updateBookingStatus);
+router.patch("/:id/cancel", protect, cancelBooking);
 
 module.exports = router;
