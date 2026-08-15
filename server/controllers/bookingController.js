@@ -181,6 +181,22 @@ const updateBookingStatus = async (req, res) => {
             });
         }
 
+        // Define allowed status transitions
+        const allowedTransitions = {
+            pending: ["confirmed", "cancelled"],
+            confirmed: ["completed", "cancelled"],
+            completed: [],
+            cancelled: []
+        };
+
+        // Check if status transition is allowed
+        if (!allowedTransitions[booking.status].includes(status)) {
+            return res.status(400).json({
+                success: false,
+                message: `Booking cannot be changed from ${booking.status} to ${status}.`
+            });
+        }
+
         // Update status
         booking.status = status;
 

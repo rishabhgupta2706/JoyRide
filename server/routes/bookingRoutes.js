@@ -5,7 +5,7 @@ const { createBooking } = require("../controllers/bookingController");
 const protect = require("../middleware/authMiddleware");
 const { getMyBookings } = require("../controllers/bookingController");
 const { getAllBookings } = require("../controllers/bookingController");
-const  adminOnly = require("../middleware/roleMiddleware");
+const adminOnly = require("../middleware/roleMiddleware");
 const { updateBookingStatus } = require("../controllers/bookingController");
 const { cancelBooking } = require("../controllers/bookingController");
 
