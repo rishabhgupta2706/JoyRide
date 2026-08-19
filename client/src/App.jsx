@@ -1,14 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
-
-function Dashboard() {
-    return (
-        <div>
-            <h1>JoyRide Dashboard</h1>
-            <p>Welcome to JoyRide.</p>
-        </div>
-    );
-}
+import Dashboard from "./pages/Dashboard";
 
 function App() {
     return (
