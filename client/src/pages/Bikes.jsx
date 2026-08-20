@@ -12,8 +12,13 @@ function Bikes() {
     useEffect(() => {
         const fetchBikes = async () => {
             try {
-                const response = await api.get("/bikes");
+                const token = localStorage.getItem("token");
 
+const response = await api.get("/bikes", {
+    headers: {
+        Authorization: `Bearer ${token}`
+    }
+});
                 setBikes(response.data.bikes);
             } catch (error) {
                 setError(
