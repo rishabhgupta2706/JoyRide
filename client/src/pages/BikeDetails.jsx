@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../services/api";
+import { useAuth } from "../context/AuthContext";
 
 function BikeDetails() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { user } = useAuth();
 
     const [bike, setBike] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -49,20 +51,34 @@ function BikeDetails() {
 
             <h1>{bike.name}</h1>
 
-            <p>Brand: {bike.brand}</p>
+            <p>
+                Brand: {bike.brand}
+            </p>
 
-            <p>Model: {bike.model}</p>
+            <p>
+                Model: {bike.model}
+            </p>
 
-            <p>Category: {bike.category}</p>
+            <p>
+                Category: {bike.category}
+            </p>
 
-            <p>Price: ₹{bike.pricePerHour}/hour</p>
+            <p>
+                Price: ₹{bike.pricePerHour}/hour
+            </p>
 
-            <p>Location: {bike.location}</p>
+            <p>
+                Location: {bike.location}
+            </p>
 
-            <p>Status: {bike.status}</p>
+            <p>
+                Status: {bike.status}
+            </p>
 
             {bike.description && (
-                <p>Description: {bike.description}</p>
+                <p>
+                    Description: {bike.description}
+                </p>
             )}
 
             {bike.image && (
@@ -75,15 +91,17 @@ function BikeDetails() {
 
             <br />
 
-            <button
-                   onClick={() =>
-                    navigate("/booking", {
-                        state: { bike }
-        })
-    }
->
-    Book This Bike
-</button>
+            {user?.role !== "admin" && (
+                <button
+                    onClick={() =>
+                        navigate("/booking", {
+                            state: { bike }
+                        })
+                    }
+                >
+                    Book This Bike
+                </button>
+            )}
         </div>
     );
 }

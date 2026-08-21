@@ -8,10 +8,17 @@ function AdminBookings() {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [updatingBooking, setUpdatingBooking] = useState(null);
 
     const fetchBookings = async () => {
         try {
-            const response = await api.get("/bookings");
+            const token = localStorage.getItem("token");
+
+            const response = await api.get("/bookings", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
 
             setBookings(response.data.bookings);
         } catch (error) {
@@ -32,9 +39,22 @@ function AdminBookings() {
 
     const updateStatus = async (bookingId, status) => {
         try {
-            await api.patch(`/bookings/${bookingId}/status`, {
-                status
-            });
+            const token = localStorage.getItem("token");
+
+            setUpdatingBooking(bookingId);
+            setError("");
+
+            await api.patch(
+                `/bookings/${bookingId}/status`,
+                {
+                    status
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
 
             await fetchBookings();
         } catch (error) {
@@ -42,6 +62,8 @@ function AdminBookings() {
                 error.response?.data?.message ||
                 "Failed to update booking status."
             );
+        } finally {
+            setUpdatingBooking(null);
         }
     };
 
@@ -53,8 +75,8 @@ function AdminBookings() {
         <div>
             <h1>Admin Bookings</h1>
 
-            <button onClick={() => navigate("/dashboard")}>
-                Back to Dashboard
+            <button onClick={() => navigate("/admin")}>
+                Back to Admin Dashboard
             </button>
 
             {error && <p>{error}</p>}
@@ -112,6 +134,10 @@ function AdminBookings() {
                             {booking.status === "pending" && (
                                 <>
                                     <button
+                                        disabled={
+                                            updatingBooking ===
+                                            booking._id
+                                        }
                                         onClick={() =>
                                             updateStatus(
                                                 booking._id,
@@ -123,6 +149,10 @@ function AdminBookings() {
                                     </button>
 
                                     <button
+                                        disabled={
+                                            updatingBooking ===
+                                            booking._id
+                                        }
                                         onClick={() =>
                                             updateStatus(
                                                 booking._id,
@@ -138,6 +168,10 @@ function AdminBookings() {
                             {booking.status === "confirmed" && (
                                 <>
                                     <button
+                                        disabled={
+                                            updatingBooking ===
+                                            booking._id
+                                        }
                                         onClick={() =>
                                             updateStatus(
                                                 booking._id,
@@ -149,6 +183,10 @@ function AdminBookings() {
                                     </button>
 
                                     <button
+                                        disabled={
+                                            updatingBooking ===
+                                            booking._id
+                                        }
                                         onClick={() =>
                                             updateStatus(
                                                 booking._id,

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../services/api";
 
@@ -12,8 +12,61 @@ function Booking() {
     const [endDate, setEndDate] = useState("");
     const [pickupLocation, setPickupLocation] = useState("");
 
+    const [availability, setAvailability] = useState(null);
+    const [checkingAvailability, setCheckingAvailability] = useState(false);
+
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        const checkAvailability = async () => {
+            if (!startDate || !endDate || !bike) {
+                setAvailability(null);
+                return;
+            }
+
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+
+            if (start <= new Date() || end <= start) {
+                setAvailability(null);
+                return;
+            }
+
+            try {
+                setCheckingAvailability(true);
+                setError("");
+
+                const response = await api.get(
+                    `/bikes/${bike._id}/availability`,
+                    {
+                        params: {
+                            startDate,
+                            endDate
+                        }
+                    }
+                );
+
+                setAvailability(response.data);
+            } catch (error) {
+                console.error(
+                    "CHECK AVAILABILITY ERROR:",
+                    error
+                );
+
+                setAvailability(null);
+
+                setError(
+                    error.response?.data?.message ||
+                    "Failed to check bike availability."
+                );
+            } finally {
+                setCheckingAvailability(false);
+            }
+        };
+
+        checkAvailability();
+    }, [startDate, endDate, bike]);
 
     if (!bike) {
         return (
@@ -62,9 +115,27 @@ function Booking() {
 
         const start = new Date(startDate);
         const end = new Date(endDate);
+        const now = new Date();
+
+        if (start <= now) {
+            setError(
+                "Start date and time must be in the future."
+            );
+            return;
+        }
 
         if (end <= start) {
-            setError("End date must be after start date.");
+            setError(
+                "End date must be after start date."
+            );
+            return;
+        }
+
+        if (availability && !availability.available) {
+            setError(
+                availability.message ||
+                "Bike is not available for the selected time."
+            );
             return;
         }
 
@@ -78,7 +149,10 @@ function Booking() {
                 pickupLocation
             });
 
-            console.log("BOOKING RESPONSE:", response.data);
+            console.log(
+                "BOOKING RESPONSE:",
+                response.data
+            );
 
             navigate("/bookings");
         } catch (error) {
@@ -95,7 +169,9 @@ function Booking() {
         <div>
             <button
                 type="button"
-                onClick={() => navigate(`/bikes/${bike._id}`)}
+                onClick={() =>
+                    navigate(`/bikes/${bike._id}`)
+                }
             >
                 Back to Bike
             </button>
@@ -108,35 +184,69 @@ function Booking() {
 
             <form onSubmit={handleBooking}>
                 <div>
-                    <label>Start Date and Time</label>
+                    <label>
+                        Start Date and Time
+                    </label>
 
                     <input
                         type="datetime-local"
                         value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
+                        min={new Date()
+                            .toISOString()
+                            .slice(0, 16)}
+                        onChange={(e) =>
+                            setStartDate(e.target.value)
+                        }
                         required
                     />
                 </div>
 
                 <div>
-                    <label>End Date and Time</label>
+                    <label>
+                        End Date and Time
+                    </label>
 
                     <input
                         type="datetime-local"
                         value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
+                        onChange={(e) =>
+                            setEndDate(e.target.value)
+                        }
                         required
                     />
                 </div>
 
+                {checkingAvailability && (
+                    <p>
+                        Checking bike availability...
+                    </p>
+                )}
+
+                {availability?.available && (
+                    <p>
+                        {availability.message}
+                    </p>
+                )}
+
+                {availability &&
+                    !availability.available && (
+                        <p>
+                            {availability.message}
+                        </p>
+                    )}
+
                 <div>
-                    <label>Pickup Location</label>
+                    <label>
+                        Pickup Location
+                    </label>
 
                     <input
                         type="text"
                         value={pickupLocation}
                         onChange={(e) =>
-                            setPickupLocation(e.target.value)
+                            setPickupLocation(
+                                e.target.value
+                            )
                         }
                         placeholder="Enter pickup location"
                         required
@@ -149,15 +259,22 @@ function Booking() {
                     </p>
 
                     <p>
-                        Estimated Amount: ₹{estimatedAmount}
+                        Estimated Amount: ₹
+                        {estimatedAmount}
                     </p>
                 </div>
 
-                {error && <p>{error}</p>}
+                {error && (
+                    <p>{error}</p>
+                )}
 
                 <button
                     type="submit"
-                    disabled={loading}
+                    disabled={
+                        loading ||
+                        checkingAvailability ||
+                        availability?.available === false
+                    }
                 >
                     {loading
                         ? "Creating Booking..."

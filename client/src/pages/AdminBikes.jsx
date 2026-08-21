@@ -157,7 +157,7 @@ function AdminBikes() {
         <div>
             <h1>Admin Bike Management</h1>
 
-            <button onClick={() => navigate("/dashboard")}>
+            <button onClick={() => navigate("/admin")}>
                 Back to Dashboard
             </button>
 

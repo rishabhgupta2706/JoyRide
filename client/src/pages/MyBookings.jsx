@@ -11,7 +11,13 @@ function MyBookings() {
 
     const fetchBookings = async () => {
         try {
-            const response = await api.get("/bookings/my");
+            const token = localStorage.getItem("token");
+
+            const response = await api.get("/bookings/my", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
 
             setBookings(response.data.bookings);
         } catch (error) {
@@ -40,7 +46,17 @@ function MyBookings() {
         }
 
         try {
-            await api.patch(`/bookings/${bookingId}/cancel`);
+            const token = localStorage.getItem("token");
+
+            await api.patch(
+                `/bookings/${bookingId}/cancel`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
 
             await fetchBookings();
         } catch (error) {
@@ -111,7 +127,9 @@ function MyBookings() {
                         Status: {booking.status}
                     </p>
 
-                    {["pending", "confirmed"].includes(booking.status) && (
+                    {["pending", "confirmed"].includes(
+                        booking.status
+                    ) && (
                         <button
                             onClick={() =>
                                 cancelBooking(booking._id)
