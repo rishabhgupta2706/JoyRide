@@ -20,12 +20,19 @@ function AdminBikes() {
         pricePerHour: "",
         location: "",
         description: "",
-        image: ""
+        image: "",
+        status: "available"
     });
 
     const fetchBikes = async () => {
         try {
-            const response = await api.get("/bikes");
+            const token = localStorage.getItem("token");
+
+            const response = await api.get("/bikes", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
 
             setBikes(response.data.bikes);
         } catch (error) {
@@ -63,7 +70,8 @@ function AdminBikes() {
             pricePerHour: "",
             location: "",
             description: "",
-            image: ""
+            image: "",
+            status: "available"
         });
 
         setEditingBikeId(null);
@@ -75,18 +83,40 @@ function AdminBikes() {
         setError("");
 
         try {
+            const token = localStorage.getItem("token");
+
             if (editingBikeId) {
                 await api.put(
                     `/bikes/${editingBikeId}`,
-                    formData
+                    {
+                        ...formData,
+                        pricePerHour: Number(
+                            formData.pricePerHour
+                        )
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
                 );
 
                 alert("Bike updated successfully.");
             } else {
-                await api.post("/bikes", {
-                    ...formData,
-                    pricePerHour: Number(formData.pricePerHour)
-                });
+                await api.post(
+                    "/bikes",
+                    {
+                        ...formData,
+                        pricePerHour: Number(
+                            formData.pricePerHour
+                        )
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
 
                 alert("Bike added successfully.");
             }
@@ -111,11 +141,15 @@ function AdminBikes() {
             brand: bike.brand || "",
             model: bike.model || "",
             category: bike.category || "",
-            registrationNumber: bike.registrationNumber || "",
-            pricePerHour: bike.pricePerHour || "",
+            registrationNumber:
+                bike.registrationNumber || "",
+            pricePerHour:
+                bike.pricePerHour || "",
             location: bike.location || "",
-            description: bike.description || "",
-            image: bike.image || ""
+            description:
+                bike.description || "",
+            image: bike.image || "",
+            status: bike.status || "available"
         });
 
         window.scrollTo({
@@ -134,13 +168,22 @@ function AdminBikes() {
         }
 
         try {
-            await api.delete(`/bikes/${bikeId}`);
+            const token = localStorage.getItem("token");
+
+            await api.delete(`/bikes/${bikeId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
 
             alert("Bike deleted successfully.");
 
             await fetchBikes();
         } catch (error) {
-            console.error("DELETE BIKE ERROR:", error);
+            console.error(
+                "DELETE BIKE ERROR:",
+                error
+            );
 
             alert(
                 error.response?.data?.message ||
@@ -157,14 +200,20 @@ function AdminBikes() {
         <div>
             <h1>Admin Bike Management</h1>
 
-            <button onClick={() => navigate("/admin")}>
-                Back to Dashboard
+            <button
+                onClick={() =>
+                    navigate("/admin")
+                }
+            >
+                Back to Admin Dashboard
             </button>
 
             <hr />
 
             <h2>
-                {editingBikeId ? "Edit Bike" : "Add New Bike"}
+                {editingBikeId
+                    ? "Edit Bike"
+                    : "Add New Bike"}
             </h2>
 
             <form onSubmit={handleSubmit}>
@@ -217,12 +266,16 @@ function AdminBikes() {
                 </div>
 
                 <div>
-                    <label>Registration Number</label>
+                    <label>
+                        Registration Number
+                    </label>
 
                     <input
                         type="text"
                         name="registrationNumber"
-                        value={formData.registrationNumber}
+                        value={
+                            formData.registrationNumber
+                        }
                         onChange={handleChange}
                         required
                     />
@@ -234,7 +287,9 @@ function AdminBikes() {
                     <input
                         type="number"
                         name="pricePerHour"
-                        value={formData.pricePerHour}
+                        value={
+                            formData.pricePerHour
+                        }
                         onChange={handleChange}
                         min="0"
                         required
@@ -258,7 +313,9 @@ function AdminBikes() {
 
                     <textarea
                         name="description"
-                        value={formData.description}
+                        value={
+                            formData.description
+                        }
                         onChange={handleChange}
                     />
                 </div>
@@ -272,6 +329,28 @@ function AdminBikes() {
                         value={formData.image}
                         onChange={handleChange}
                     />
+                </div>
+
+                <div>
+                    <label>Bike Status</label>
+
+                    <select
+                        name="status"
+                        value={formData.status}
+                        onChange={handleChange}
+                    >
+                        <option value="available">
+                            Available
+                        </option>
+
+                        <option value="maintenance">
+                            Maintenance
+                        </option>
+
+                        <option value="inactive">
+                            Inactive
+                        </option>
+                    </select>
                 </div>
 
                 {error && <p>{error}</p>}
@@ -323,7 +402,8 @@ function AdminBikes() {
                         </p>
 
                         <p>
-                            Price: ₹{bike.pricePerHour}/hour
+                            Price: ₹
+                            {bike.pricePerHour}/hour
                         </p>
 
                         <p>
@@ -342,14 +422,18 @@ function AdminBikes() {
                         )}
 
                         <button
-                            onClick={() => handleEdit(bike)}
+                            onClick={() =>
+                                handleEdit(bike)
+                            }
                         >
                             Edit
                         </button>
 
                         <button
                             onClick={() =>
-                                handleDelete(bike._id)
+                                handleDelete(
+                                    bike._id
+                                )
                             }
                         >
                             Delete

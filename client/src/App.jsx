@@ -12,6 +12,7 @@ import AdminBikes from "./pages/AdminBikes";
 import AdminRoute from "./components/AdminRoute";
 import AdminDashboard from "./pages/AdminDashboard";
 import Navbar from "./components/Navbar";
+import AIRecommendation from "./pages/AIRecommendation";
 
 function App() {
     return (
@@ -39,6 +40,11 @@ function App() {
                         </AdminRoute>
                     }
                 />
+
+                <Route
+                      path="/ai-recommendation"
+                        element={<AIRecommendation />}
+                    />
 
                 <Route
                     path="/admin"

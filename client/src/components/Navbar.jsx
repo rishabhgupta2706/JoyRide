@@ -29,6 +29,10 @@ function Navbar() {
                     Bikes
                 </Link>
 
+                <Link to="/ai-recommendation">
+                     AI Recommendations
+                </Link>
+
                 <Link to="/bookings">
                     My Bookings
                 </Link>

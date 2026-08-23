@@ -131,10 +131,9 @@ function Booking() {
             return;
         }
 
-        if (availability && !availability.available) {
+        if (!availability?.available) {
             setError(
-                availability.message ||
-                "Bike is not available for the selected time."
+                "Please select an available time before booking."
             );
             return;
         }
@@ -273,7 +272,7 @@ function Booking() {
                     disabled={
                         loading ||
                         checkingAvailability ||
-                        availability?.available === false
+                        !availability?.available
                     }
                 >
                     {loading
