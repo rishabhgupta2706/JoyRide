@@ -440,3 +440,149 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* AI Recommendation Page */
+
+.ai-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 30px 80px;
+}
+
+.ai-hero {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.ai-hero h1 {
+    font-size: 56px;
+    margin-bottom: 15px;
+}
+
+.ai-hero p {
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.ai-hero textarea {
+    width: 100%;
+    max-width: 600px;
+    min-height: 120px;
+    padding: 15px;
+    font-size: 16px;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+.ai-hero button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.ai-error {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.ai-results h2 {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 30px;
+}
+
+.ai-bike-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.ai-bike-card {
+    border: 1px solid #333;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #18181f;
+}
+
+.ai-bike-image {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e5e5e5;
+}
+
+.ai-bike-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.ai-bike-content {
+    padding: 20px;
+}
+
+.ai-bike-content h3 {
+    font-size: 25px;
+    margin-bottom: 10px;
+}
+
+.ai-bike-content p {
+    margin: 8px 0;
+}
+
+.ai-bike-content strong {
+    font-size: 22px;
+}
+
+.ai-bike-content span {
+    margin-left: 4px;
+}
+
+.ai-bike-content h4 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.ai-bike-content ul {
+    padding-left: 20px;
+    margin-bottom: 20px;
+}
+
+.ai-bike-content li {
+    margin-bottom: 8px;
+}
+
+.ai-bike-content button {
+    width: 100%;
+    padding: 10px;
+    cursor: pointer;
+}
+
+/* Tablet */
+
+@media (max-width: 900px) {
+    .ai-bike-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+    .ai-page {
+        padding: 25px 15px 60px;
+    }
+
+    .ai-hero h1 {
+        font-size: 38px;
+    }
+
+    .ai-bike-grid {
+        grid-template-columns: 1fr;
+    }
+}

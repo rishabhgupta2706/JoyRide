@@ -1,9 +1,13 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 
 function AIRecommendation() {
+    const navigate = useNavigate();
+
     const [prompt, setPrompt] = useState("");
     const [recommendations, setRecommendations] = useState([]);
+    const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
@@ -12,11 +16,16 @@ function AIRecommendation() {
             setError(
                 "Please describe what kind of bike you are looking for."
             );
+
+            setRecommendations([]);
+            setMessage("");
+
             return;
         }
 
         setLoading(true);
         setError("");
+        setMessage("");
         setRecommendations([]);
 
         try {
@@ -30,6 +39,10 @@ function AIRecommendation() {
             setRecommendations(
                 response.data.recommendations || []
             );
+
+            setMessage(
+                response.data.message || ""
+            );
         } catch (error) {
             console.error(
                 "AI RECOMMENDATION ERROR:",
@@ -40,21 +53,28 @@ function AIRecommendation() {
                 error.response?.data?.message ||
                 "Failed to get bike recommendations."
             );
+
+            setRecommendations([]);
+            setMessage("");
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div>
-            <h1>AI Bike Recommendation</h1>
+        <div className="ai-page">
 
-            <p>
-                Tell JoyRide what kind of bike you are
-                looking for.
-            </p>
+            <section className="ai-hero">
 
-            <div>
+                <h1>
+                    AI Bike Recommendation
+                </h1>
+
+                <p>
+                    Tell JoyRide what kind of bike you
+                    are looking for.
+                </p>
+
                 <textarea
                     value={prompt}
                     onChange={(e) =>
@@ -62,130 +82,222 @@ function AIRecommendation() {
                     }
                     placeholder="Example: I want a cheap bike in Chennai"
                     rows="5"
-                    cols="50"
                 />
-            </div>
 
-            <br />
+                <br />
 
-            <button
-                onClick={getRecommendations}
-                disabled={loading}
-            >
-                {loading
-                    ? "Finding Bikes..."
-                    : "Get Recommendation"}
-            </button>
+                <button
+                    onClick={getRecommendations}
+                    disabled={loading}
+                >
+                    {loading
+                        ? "Finding Bikes..."
+                        : "Get Recommendation"}
+                </button>
+
+            </section>
+
+
+            {/* Error Message */}
 
             {error && (
-                <p>{error}</p>
+                <p className="ai-error">
+                    {error}
+                </p>
             )}
 
-            {recommendations.length > 0 && (
-                <div>
+
+            {/* Loading Message */}
+
+            {loading && (
+                <div className="ai-no-results">
                     <h2>
-                        Recommended Bikes
+                        Finding the best bikes for you...
                     </h2>
-
-                    {recommendations.map(
-                        (recommendation) => {
-                            const bike =
-                                recommendation.bike;
-
-                            return (
-                                <div
-                                    key={bike._id}
-                                >
-                                    <hr />
-
-                                    {bike.image && (
-                                        <img
-                                            src={
-                                                bike.image
-                                            }
-                                            alt={
-                                                bike.name
-                                            }
-                                            width="250"
-                                        />
-                                    )}
-
-                                    <h3>
-                                        {bike.name}
-                                    </h3>
-
-                                    <p>
-                                        Brand:{" "}
-                                        {bike.brand}
-                                    </p>
-
-                                    <p>
-                                        Model:{" "}
-                                        {bike.model}
-                                    </p>
-
-                                    <p>
-                                        Category:{" "}
-                                        {bike.category}
-                                    </p>
-
-                                    <p>
-                                        Location:{" "}
-                                        {bike.location}
-                                    </p>
-
-                                    <p>
-                                        Price: ₹
-                                        {
-                                            bike.pricePerHour
-                                        }
-                                        /hour
-                                    </p>
-
-                                    <p>
-                                        Status:{" "}
-                                        {bike.status}
-                                    </p>
-
-                                    <h4>
-                                        Why this bike
-                                        was recommended
-                                    </h4>
-
-                                    <ul>
-                                        {recommendation.reasons.map(
-                                            (
-                                                reason,
-                                                index
-                                            ) => (
-                                                <li
-                                                    key={
-                                                        index
-                                                    }
-                                                >
-                                                    {
-                                                        reason
-                                                    }
-                                                </li>
-                                            )
-                                        )}
-                                    </ul>
-
-                                    <p>
-                                        Recommendation
-                                        Score:{" "}
-                                        {
-                                            recommendation.score
-                                        }
-                                    </p>
-                                </div>
-                            );
-                        }
-                    )}
                 </div>
             )}
+
+
+            {/* No Results */}
+
+            {!loading &&
+                !error &&
+                recommendations.length === 0 &&
+                message && (
+                    <div className="ai-no-results">
+
+                        <h2>
+                            No bikes found
+                        </h2>
+
+                        <p>
+                            {message}
+                        </p>
+
+                        <p>
+                            Try increasing your budget
+                            or changing your location.
+                        </p>
+
+                    </div>
+                )}
+
+
+            {/* Recommendations */}
+
+            {!loading &&
+                recommendations.length > 0 && (
+                    <section className="ai-results">
+
+                        <h2>
+                            Recommended Bikes
+                        </h2>
+
+                        <div className="ai-bike-grid">
+
+                            {recommendations.map(
+                                (recommendation) => {
+
+                                    const bike =
+                                        recommendation.bike;
+
+                                    return (
+                                        <div
+                                            className="ai-bike-card"
+                                            key={bike._id}
+                                        >
+
+                                            {/* Bike Image */}
+
+                                            <div className="ai-bike-image">
+
+                                                {bike.image ? (
+                                                    <img
+                                                        src={
+                                                            bike.image
+                                                        }
+                                                        alt={
+                                                            bike.name
+                                                        }
+                                                    />
+                                                ) : (
+                                                    <div>
+                                                        No Image
+                                                    </div>
+                                                )}
+
+                                            </div>
+
+
+                                            {/* Bike Information */}
+
+                                            <div className="ai-bike-content">
+
+                                                <h3>
+                                                    {bike.name}
+                                                </h3>
+
+                                                <p>
+                                                    {bike.brand}{" "}
+                                                    {bike.model}
+                                                </p>
+
+                                                <p>
+                                                    Category:{" "}
+                                                    {
+                                                        bike.category
+                                                    }
+                                                </p>
+
+                                                <p>
+                                                    Location:{" "}
+                                                    {
+                                                        bike.location
+                                                    }
+                                                </p>
+
+
+                                                {/* Price */}
+
+                                                <div>
+                                                    <strong>
+                                                        ₹
+                                                        {
+                                                            bike.pricePerHour
+                                                        }
+                                                    </strong>
+
+                                                    <span>
+                                                        /hour
+                                                    </span>
+                                                </div>
+
+
+                                                {/* Status */}
+
+                                                <p>
+                                                    Status:{" "}
+                                                    {
+                                                        bike.status
+                                                    }
+                                                </p>
+
+
+                                                {/* Reasons */}
+
+                                                <h4>
+                                                    Why this bike
+                                                    was recommended
+                                                </h4>
+
+                                                <ul>
+
+                                                    {recommendation.reasons.map(
+                                                        (
+                                                            reason,
+                                                            index
+                                                        ) => (
+                                                            <li
+                                                                key={
+                                                                    index
+                                                                }
+                                                            >
+                                                                {
+                                                                    reason
+                                                                }
+                                                            </li>
+                                                        )
+                                                    )}
+
+                                                </ul>
+
+
+                                                {/* View Details */}
+
+                                                <button
+                                                    onClick={() =>
+                                                        navigate(
+                                                            `/bikes/${bike._id}`
+                                                        )
+                                                    }
+                                                >
+                                                    View Details
+                                                </button>
+
+                                            </div>
+
+                                        </div>
+                                    );
+                                }
+                            )}
+
+                        </div>
+
+                    </section>
+                )}
+
         </div>
     );
 }
 
-export default AIRecommendation;
+export default AIRecommendation; 
