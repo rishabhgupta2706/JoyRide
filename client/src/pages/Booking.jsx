@@ -8,6 +8,18 @@ function Booking() {
 
     const bike = location.state?.bike;
 
+    const getMinDateTime = () => {
+    const now = new Date();
+
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
+
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [pickupLocation, setPickupLocation] = useState("");
@@ -190,9 +202,7 @@ function Booking() {
                     <input
                         type="datetime-local"
                         value={startDate}
-                        min={new Date()
-                            .toISOString()
-                            .slice(0, 16)}
+                        min={getMinDateTime()}
                         onChange={(e) =>
                             setStartDate(e.target.value)
                         }

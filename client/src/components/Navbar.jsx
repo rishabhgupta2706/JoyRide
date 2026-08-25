@@ -14,48 +14,69 @@ function Navbar() {
         navigate("/login");
     };
 
+    const isAdmin = user.role === "admin";
+
     return (
         <nav className="navbar">
-            <div className="navbar-brand">
+            <div className="navbar-container">
+
                 <Link
-                    to={user.role === "admin" ? "/admin" : "/dashboard"}
+                    className="navbar-brand"
+                    to={isAdmin ? "/admin" : "/dashboard"}
                 >
                     JoyRide
                 </Link>
-            </div>
 
-            <div className="navbar-links">
-                <Link to="/bikes">
-                    Bikes
-                </Link>
+                <div className="navbar-links">
 
-                <Link to="/ai-recommendation">
-                     AI Recommendations
-                </Link>
+                    {!isAdmin && (
+                        <>
+                            <Link to="/dashboard">
+                                Home
+                            </Link>
 
-                <Link to="/bookings">
-                    My Bookings
-                </Link>
+                            <Link to="/bikes">
+                                Bikes
+                            </Link>
 
-                {user.role === "admin" && (
-                    <>
-                        <Link to="/admin/bikes">
-                            Manage Bikes
-                        </Link>
+                            <Link to="/ai-recommendation">
+                                AI Recommendations
+                            </Link>
 
-                        <Link to="/admin/bookings">
-                            Manage Bookings
-                        </Link>
-                    </>
-                )}
+                            <Link to="/bookings">
+                                My Bookings
+                            </Link>
+                        </>
+                    )}
 
-                <span className="navbar-user">
-                    {user.name}
-                </span>
+                    {isAdmin && (
+                        <>
+                            <Link to="/admin">
+                                Dashboard
+                            </Link>
 
-                <button onClick={handleLogout}>
-                    Logout
-                </button>
+                            <Link to="/admin/bikes">
+                                Manage Bikes
+                            </Link>
+
+                            <Link to="/admin/bookings">
+                                Manage Bookings
+                            </Link>
+                        </>
+                    )}
+
+                    <span className="navbar-user">
+                        {user.name}
+                    </span>
+
+                    <button
+                        className="navbar-logout"
+                        onClick={handleLogout}
+                    >
+                        Logout
+                    </button>
+
+                </div>
             </div>
         </nav>
     );

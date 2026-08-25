@@ -43,7 +43,7 @@ router.post("/recommend", async (req, res) => {
 
         /*
          * ------------------------------------------------
-         * 2. DETECT PRICE PREFERENCES
+         * 2. PRICE PREFERENCES
          * ------------------------------------------------
          */
 
@@ -66,7 +66,7 @@ router.post("/recommend", async (req, res) => {
 
         /*
          * ------------------------------------------------
-         * 3. DETECT LOCATION
+         * 3. LOCATION
          * ------------------------------------------------
          */
 
@@ -87,13 +87,13 @@ router.post("/recommend", async (req, res) => {
 
         /*
          * ------------------------------------------------
-         * 4. DETECT RIDING STYLE
+         * 4. RIDING STYLE / USE CASE
          * ------------------------------------------------
          */
 
         const categoryPreferences = [];
 
-        if (
+        const wantsCommuter =
             text.includes("commuter") ||
             text.includes("office") ||
             text.includes("daily") ||
@@ -102,60 +102,66 @@ router.post("/recommend", async (req, res) => {
             text.includes("school") ||
             text.includes("city") ||
             text.includes("everyday") ||
-            text.includes("commute")
-        ) {
-            categoryPreferences.push("commuter");
-        }
+            text.includes("commute");
 
-        if (
+        const wantsCruiser =
             text.includes("cruiser") ||
             text.includes("comfortable") ||
             text.includes("comfort") ||
             text.includes("relaxed") ||
             text.includes("long ride") ||
             text.includes("long trip") ||
-            text.includes("highway")
-        ) {
-            categoryPreferences.push("cruiser");
-        }
+            text.includes("highway");
 
-        if (
+        const wantsRoadster =
             text.includes("roadster") ||
             text.includes("street bike") ||
-            text.includes("street")
-        ) {
-            categoryPreferences.push("roadster");
-        }
+            text.includes("street");
 
-        if (
+        const wantsSport =
             text.includes("sport") ||
             text.includes("sports") ||
             text.includes("sporty") ||
             text.includes("racing") ||
             text.includes("fast") ||
-            text.includes("performance")
-        ) {
-            categoryPreferences.push("sports");
-            categoryPreferences.push("sport");
-        }
+            text.includes("performance");
 
-        if (
+        const wantsAdventure =
             text.includes("adventure") ||
             text.includes("off road") ||
             text.includes("off-road") ||
             text.includes("rough roads") ||
             text.includes("hills") ||
-            text.includes("mountains")
-        ) {
-            categoryPreferences.push("adventure");
-        }
+            text.includes("mountains");
 
-        if (
+        const wantsTouring =
             text.includes("touring") ||
             text.includes("tour") ||
             text.includes("road trip") ||
-            text.includes("travel")
-        ) {
+            text.includes("travel");
+
+        if (wantsCommuter) {
+            categoryPreferences.push("commuter");
+        }
+
+        if (wantsCruiser) {
+            categoryPreferences.push("cruiser");
+        }
+
+        if (wantsRoadster) {
+            categoryPreferences.push("roadster");
+        }
+
+        if (wantsSport) {
+            categoryPreferences.push("sports");
+            categoryPreferences.push("sport");
+        }
+
+        if (wantsAdventure) {
+            categoryPreferences.push("adventure");
+        }
+
+        if (wantsTouring) {
             categoryPreferences.push("touring");
         }
 
@@ -167,15 +173,12 @@ router.post("/recommend", async (req, res) => {
          * ------------------------------------------------
          * 5. HARD FILTER
          * ------------------------------------------------
-         *
-         * Budget and location are treated as hard
-         * requirements when explicitly mentioned.
          */
 
         let filteredBikes = bikes;
 
         /*
-         * Budget filter
+         * Budget is a hard requirement.
          */
 
         if (budget !== null) {
@@ -186,7 +189,8 @@ router.post("/recommend", async (req, res) => {
         }
 
         /*
-         * Location filter
+         * Location is a hard requirement when
+         * explicitly mentioned.
          */
 
         if (requestedLocation) {
@@ -198,8 +202,7 @@ router.post("/recommend", async (req, res) => {
         }
 
         /*
-         * If no bikes match the hard requirements,
-         * return an empty recommendation list.
+         * No bike matches the hard requirements.
          */
 
         if (filteredBikes.length === 0) {
@@ -213,7 +216,7 @@ router.post("/recommend", async (req, res) => {
 
         /*
          * ------------------------------------------------
-         * 6. SCORE REMAINING BIKES
+         * 6. SCORE BIKES
          * ------------------------------------------------
          */
 
@@ -235,7 +238,9 @@ router.post("/recommend", async (req, res) => {
                 bike.category?.toLowerCase() || "";
 
             /*
-             * Location match
+             * --------------------------------------------
+             * LOCATION
+             * --------------------------------------------
              */
 
             if (
@@ -244,22 +249,24 @@ router.post("/recommend", async (req, res) => {
                     ?.toLowerCase()
                     .trim() === requestedLocation
             ) {
-                score += 30;
+                score += 20;
 
                 reasons.push(
-                    `Matches your preferred location: ${bike.location}`
+                    `Available at your preferred location: ${bike.location}`
                 );
             }
 
             /*
-             * Bike name match
+             * --------------------------------------------
+             * EXACT BIKE NAME
+             * --------------------------------------------
              */
 
             if (
                 bikeName &&
                 text.includes(bikeName)
             ) {
-                score += 40;
+                score += 100;
 
                 reasons.push(
                     `Matches the bike you mentioned: ${bike.name}`
@@ -267,14 +274,16 @@ router.post("/recommend", async (req, res) => {
             }
 
             /*
-             * Brand match
+             * --------------------------------------------
+             * BRAND
+             * --------------------------------------------
              */
 
             if (
                 brand &&
                 text.includes(brand)
             ) {
-                score += 25;
+                score += 60;
 
                 reasons.push(
                     `Matches your preferred brand: ${bike.brand}`
@@ -282,14 +291,16 @@ router.post("/recommend", async (req, res) => {
             }
 
             /*
-             * Model match
+             * --------------------------------------------
+             * MODEL
+             * --------------------------------------------
              */
 
             if (
                 model &&
                 text.includes(model)
             ) {
-                score += 20;
+                score += 70;
 
                 reasons.push(
                     `Matches your preferred model: ${bike.model}`
@@ -297,7 +308,9 @@ router.post("/recommend", async (req, res) => {
             }
 
             /*
-             * Category match
+             * --------------------------------------------
+             * CATEGORY
+             * --------------------------------------------
              */
 
             const categoryMatched =
@@ -309,7 +322,7 @@ router.post("/recommend", async (req, res) => {
                 );
 
             if (categoryMatched) {
-                score += 35;
+                score += 70;
 
                 reasons.push(
                     `Matches your preferred riding style: ${bike.category}`
@@ -317,11 +330,17 @@ router.post("/recommend", async (req, res) => {
             }
 
             /*
-             * Budget match
+             * --------------------------------------------
+             * BUDGET
+             * --------------------------------------------
+             *
+             * Budget has already been hard filtered.
+             * We give a smaller score here because
+             * satisfying the budget is expected.
              */
 
             if (budget !== null) {
-                score += 50;
+                score += 20;
 
                 reasons.push(
                     `Fits your budget of ₹${budget}/hour`
@@ -329,14 +348,16 @@ router.post("/recommend", async (req, res) => {
             }
 
             /*
-             * Cheap preference
+             * --------------------------------------------
+             * CHEAP PREFERENCE
+             * --------------------------------------------
              */
 
             if (wantsCheap) {
                 if (
                     bike.pricePerHour <= 30
                 ) {
-                    score += 30;
+                    score += 40;
 
                     reasons.push(
                         "Excellent choice for a budget-friendly ride"
@@ -344,7 +365,7 @@ router.post("/recommend", async (req, res) => {
                 } else if (
                     bike.pricePerHour <= 50
                 ) {
-                    score += 20;
+                    score += 25;
 
                     reasons.push(
                         "Good choice for a budget-friendly ride"
@@ -361,14 +382,16 @@ router.post("/recommend", async (req, res) => {
             }
 
             /*
-             * Premium preference
+             * --------------------------------------------
+             * PREMIUM PREFERENCE
+             * --------------------------------------------
              */
 
             if (wantsPremium) {
                 if (
                     bike.pricePerHour >= 100
                 ) {
-                    score += 30;
+                    score += 40;
 
                     reasons.push(
                         "Matches your preference for a premium bike"
@@ -376,7 +399,7 @@ router.post("/recommend", async (req, res) => {
                 } else if (
                     bike.pricePerHour >= 50
                 ) {
-                    score += 15;
+                    score += 20;
 
                     reasons.push(
                         "Offers a higher-priced rental option"
@@ -385,41 +408,35 @@ router.post("/recommend", async (req, res) => {
             }
 
             /*
-             * Daily commute
+             * --------------------------------------------
+             * COMMUTER
+             * --------------------------------------------
              */
 
-            if (
-                text.includes("office") ||
-                text.includes("daily") ||
-                text.includes("college") ||
-                text.includes("commute")
-            ) {
+            if (wantsCommuter) {
                 if (
                     category.includes("commuter")
                 ) {
-                    score += 25;
+                    score += 60;
 
                     reasons.push(
-                        "Suitable for daily commuting"
+                        "Well suited for daily commuting"
                     );
                 }
             }
 
             /*
-             * Comfort / long rides
+             * --------------------------------------------
+             * CRUISER / COMFORT
+             * --------------------------------------------
              */
 
-            if (
-                text.includes("comfortable") ||
-                text.includes("comfort") ||
-                text.includes("long ride") ||
-                text.includes("long trip")
-            ) {
+            if (wantsCruiser) {
                 if (
                     category.includes("cruiser") ||
                     category.includes("touring")
                 ) {
-                    score += 25;
+                    score += 60;
 
                     reasons.push(
                         "Suitable for comfortable long-distance rides"
@@ -428,43 +445,53 @@ router.post("/recommend", async (req, res) => {
             }
 
             /*
-             * Sport / performance
+             * --------------------------------------------
+             * SPORT / PERFORMANCE
+             * --------------------------------------------
              */
 
-            if (
-                text.includes("sporty") ||
-                text.includes("sports") ||
-                text.includes("fast") ||
-                text.includes("racing") ||
-                text.includes("performance")
-            ) {
+            if (wantsSport) {
                 if (
                     category.includes("sport") ||
                     category.includes("roadster")
                 ) {
-                    score += 25;
+                    score += 60;
 
                     reasons.push(
-                        "Suitable for a sporty and performance-oriented ride"
+                        "Suitable for sporty and performance-oriented riding"
                     );
                 }
             }
 
             /*
-             * Adventure
+             * --------------------------------------------
+             * ROADSTER
+             * --------------------------------------------
              */
 
-            if (
-                text.includes("adventure") ||
-                text.includes("off road") ||
-                text.includes("rough roads") ||
-                text.includes("mountains") ||
-                text.includes("hills")
-            ) {
+            if (wantsRoadster) {
+                if (
+                    category.includes("roadster")
+                ) {
+                    score += 60;
+
+                    reasons.push(
+                        "Matches your preference for a roadster"
+                    );
+                }
+            }
+
+            /*
+             * --------------------------------------------
+             * ADVENTURE
+             * --------------------------------------------
+             */
+
+            if (wantsAdventure) {
                 if (
                     category.includes("adventure")
                 ) {
-                    score += 25;
+                    score += 60;
 
                     reasons.push(
                         "Suitable for adventure and rough-road riding"
@@ -473,7 +500,28 @@ router.post("/recommend", async (req, res) => {
             }
 
             /*
-             * Remove duplicate reasons
+             * --------------------------------------------
+             * TOURING
+             * --------------------------------------------
+             */
+
+            if (wantsTouring) {
+                if (
+                    category.includes("touring") ||
+                    category.includes("cruiser")
+                ) {
+                    score += 60;
+
+                    reasons.push(
+                        "Suitable for touring and longer trips"
+                    );
+                }
+            }
+
+            /*
+             * --------------------------------------------
+             * REMOVE DUPLICATE REASONS
+             * --------------------------------------------
              */
 
             const uniqueReasons = [
@@ -499,9 +547,6 @@ router.post("/recommend", async (req, res) => {
          * ------------------------------------------------
          * 7. SORT
          * ------------------------------------------------
-         *
-         * Highest score first.
-         * If scores are equal, cheaper bike first.
          */
 
         scoredBikes.sort((a, b) => {
@@ -519,7 +564,7 @@ router.post("/recommend", async (req, res) => {
 
         /*
          * ------------------------------------------------
-         * 8. TOP 3 RECOMMENDATIONS
+         * 8. TOP 3
          * ------------------------------------------------
          */
 

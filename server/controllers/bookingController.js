@@ -28,6 +28,13 @@ const createBooking = async (req, res) => {
             });
         }
 
+        if (["maintenance", "inactive"].includes(bikeData.status)) {
+    return res.status(400).json({
+        success: false,
+        message: `Bike is currently ${bikeData.status} and cannot be booked.`
+    });
+}
+
         // Convert dates
         const start = new Date(startDate);
         const end = new Date(endDate);
