@@ -8,18 +8,16 @@ function MyBookings() {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [cancellingId, setCancellingId] = useState(null);
 
     const fetchBookings = async () => {
         try {
-            const token = localStorage.getItem("token");
+            setLoading(true);
+            setError("");
 
-            const response = await api.get("/bookings/my", {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
+            const response = await api.get("/bookings/my");
 
-            setBookings(response.data.bookings);
+            setBookings(response.data.bookings || []);
         } catch (error) {
             console.error("GET BOOKINGS ERROR:", error);
 
@@ -46,100 +44,316 @@ function MyBookings() {
         }
 
         try {
-            const token = localStorage.getItem("token");
+            setCancellingId(bookingId);
 
             await api.patch(
                 `/bookings/${bookingId}/cancel`,
-                {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
+                {}
             );
 
             await fetchBookings();
         } catch (error) {
-            alert(
+            console.error(
+                "CANCEL BOOKING ERROR:",
+                error
+            );
+
+            setError(
                 error.response?.data?.message ||
                 "Failed to cancel booking."
             );
+        } finally {
+            setCancellingId(null);
         }
     };
 
     const formatDate = (date) => {
-        return new Date(date).toLocaleString();
+        return new Date(date).toLocaleString("en-IN", {
+            dateStyle: "medium",
+            timeStyle: "short"
+        });
+    };
+
+    const getStatusClass = (status) => {
+        return `my-booking-status ${status}`;
     };
 
     if (loading) {
-        return <h2>Loading bookings...</h2>;
+        return (
+            <div className="my-bookings-page">
+                <div className="my-bookings-message">
+                    Loading your bookings...
+                </div>
+            </div>
+        );
     }
 
     return (
-        <div>
-            <h1>My Bookings</h1>
+        <div className="my-bookings-page">
 
-            <button onClick={() => navigate("/dashboard")}>
-                Back to Dashboard
-            </button>
+            {/* Page Header */}
 
-            {error && <p>{error}</p>}
+            <section className="my-bookings-header">
 
-            {!error && bookings.length === 0 && (
-                <div>
-                    <h2>No bookings yet</h2>
+                <p className="my-bookings-label">
+                    JOYRIDE
+                </p>
 
-                    <button onClick={() => navigate("/bikes")}>
-                        Browse Bikes
-                    </button>
+                <h1>
+                    My Bookings
+                </h1>
+
+                <p>
+                    Manage your current and previous
+                    bike rental bookings.
+                </p>
+
+            </section>
+
+
+            {/* Back Button */}
+
+            <div className="my-bookings-top-actions">
+
+                <button
+                    type="button"
+                    onClick={() =>
+                        navigate("/dashboard")
+                    }
+                >
+                    Back to Dashboard
+                </button>
+
+                <button
+                    type="button"
+                    onClick={() =>
+                        navigate("/bikes")
+                    }
+                >
+                    Browse Bikes
+                </button>
+
+            </div>
+
+
+            {/* Error */}
+
+            {error && (
+                <div className="my-bookings-error">
+                    {error}
                 </div>
             )}
 
-            {bookings.map((booking) => (
-                <div key={booking._id}>
-                    <hr />
+
+            {/* Empty State */}
+
+            {!error && bookings.length === 0 && (
+                <section className="my-bookings-empty">
 
                     <h2>
-                        {booking.bike?.name || "Bike"}
+                        No bookings yet
                     </h2>
 
                     <p>
-                        Brand: {booking.bike?.brand || "N/A"}
+                        You haven't booked a bike yet.
+                        Find your next ride and start
+                        your journey with JoyRide.
                     </p>
 
-                    <p>
-                        Pickup Location: {booking.pickupLocation}
-                    </p>
+                    <button
+                        type="button"
+                        onClick={() =>
+                            navigate("/bikes")
+                        }
+                    >
+                        Browse Bikes
+                    </button>
 
-                    <p>
-                        Start: {formatDate(booking.startDate)}
-                    </p>
+                </section>
+            )}
 
-                    <p>
-                        End: {formatDate(booking.endDate)}
-                    </p>
 
-                    <p>
-                        Total Amount: ₹{booking.totalAmount}
-                    </p>
+            {/* Booking List */}
 
-                    <p>
-                        Status: {booking.status}
-                    </p>
+            {bookings.length > 0 && (
+                <section className="my-bookings-list">
 
-                    {["pending", "confirmed"].includes(
-                        booking.status
-                    ) && (
-                        <button
-                            onClick={() =>
-                                cancelBooking(booking._id)
-                            }
-                        >
-                            Cancel Booking
-                        </button>
-                    )}
-                </div>
-            ))}
+                    {bookings.map((booking) => {
+
+                        const bike = booking.bike;
+
+                        return (
+                            <article
+                                className="my-booking-card"
+                                key={booking._id}
+                            >
+
+                                {/* Bike Image */}
+
+                                <div className="my-booking-image">
+
+                                    {bike?.image ? (
+                                        <img
+                                            src={bike.image}
+                                            alt={
+                                                bike.name ||
+                                                "Bike"
+                                            }
+                                        />
+                                    ) : (
+                                        <div>
+                                            No Image
+                                        </div>
+                                    )}
+
+                                </div>
+
+
+                                {/* Booking Content */}
+
+                                <div className="my-booking-content">
+
+                                    <div className="my-booking-header-row">
+
+                                        <div>
+
+                                            <p className="my-booking-label">
+                                                BIKE RENTAL
+                                            </p>
+
+                                            <h2>
+                                                {bike?.name ||
+                                                    "Bike"}
+                                            </h2>
+
+                                            <p className="my-booking-brand">
+                                                {bike?.brand ||
+                                                    "N/A"}{" "}
+                                                {bike?.model ||
+                                                    ""}
+                                            </p>
+
+                                        </div>
+
+                                        <span
+                                            className={getStatusClass(
+                                                booking.status
+                                            )}
+                                        >
+                                            {booking.status}
+                                        </span>
+
+                                    </div>
+
+
+                                    {/* Booking Information */}
+
+                                    <div className="my-booking-info">
+
+                                        <div>
+
+                                            <span>
+                                                Pickup Location
+                                            </span>
+
+                                            <strong>
+                                                {
+                                                    booking.pickupLocation
+                                                }
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <span>
+                                                Start
+                                            </span>
+
+                                            <strong>
+                                                {formatDate(
+                                                    booking.startDate
+                                                )}
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <span>
+                                                End
+                                            </span>
+
+                                            <strong>
+                                                {formatDate(
+                                                    booking.endDate
+                                                )}
+                                            </strong>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    {/* Footer */}
+
+                                    <div className="my-booking-footer">
+
+                                        <div>
+
+                                            <span>
+                                                Total Amount
+                                            </span>
+
+                                            <strong>
+                                                ₹
+                                                {
+                                                    booking.totalAmount
+                                                }
+                                            </strong>
+
+                                        </div>
+
+
+                                        {[
+                                            "pending",
+                                            "confirmed"
+                                        ].includes(
+                                            booking.status
+                                        ) && (
+                                            <button
+                                                type="button"
+                                                className="my-booking-cancel"
+                                                disabled={
+                                                    cancellingId ===
+                                                    booking._id
+                                                }
+                                                onClick={() =>
+                                                    cancelBooking(
+                                                        booking._id
+                                                    )
+                                                }
+                                            >
+                                                {cancellingId ===
+                                                booking._id
+                                                    ? "Cancelling..."
+                                                    : "Cancel Booking"}
+                                            </button>
+                                        )}
+
+                                    </div>
+
+                                </div>
+
+                            </article>
+                        );
+                    })}
+
+                </section>
+            )}
+
         </div>
     );
 }
