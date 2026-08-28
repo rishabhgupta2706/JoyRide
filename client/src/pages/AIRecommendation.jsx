@@ -274,15 +274,33 @@ function AIRecommendation() {
 
                                                 {/* View Details */}
 
-                                                <button
-                                                    onClick={() =>
-                                                        navigate(
-                                                            `/bikes/${bike._id}`
-                                                        )
-                                                    }
-                                                >
-                                                    View Details
-                                                </button>
+                                                <div className="ai-bike-actions">
+
+    <button
+        className="ai-details-button"
+        onClick={() =>
+            navigate(
+                `/bikes/${bike._id}`
+            )
+        }
+    >
+        View Details
+    </button>
+
+    <button
+        className="ai-book-button"
+        onClick={() =>
+            navigate("/booking", {
+                state: {
+                    bike
+                }
+            })
+        }
+    >
+        Book This Bike
+    </button>
+
+</div>
 
                                             </div>
 

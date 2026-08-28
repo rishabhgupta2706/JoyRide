@@ -20,7 +20,7 @@ function AdminBookings() {
                 }
             });
 
-            setBookings(response.data.bookings);
+            setBookings(response.data.bookings || []);
         } catch (error) {
             console.error("GET ALL BOOKINGS ERROR:", error);
 
@@ -58,7 +58,7 @@ function AdminBookings() {
 
             await fetchBookings();
         } catch (error) {
-            alert(
+            setError(
                 error.response?.data?.message ||
                 "Failed to update booking status."
             );
@@ -67,141 +67,249 @@ function AdminBookings() {
         }
     };
 
+    const formatDate = (date) => {
+        return new Date(date).toLocaleString();
+    };
+
+    const getStatusClass = (status) => {
+        return `admin-booking-status admin-booking-status-${status}`;
+    };
+
     if (loading) {
-        return <h2>Loading bookings...</h2>;
+        return (
+            <div className="admin-page">
+                <div className="admin-loading">
+                    <h2>Loading bookings...</h2>
+                </div>
+            </div>
+        );
     }
 
     return (
-        <div>
-            <h1>Admin Bookings</h1>
+        <div className="admin-page">
 
-            <button onClick={() => navigate("/admin")}>
-                Back to Admin Dashboard
-            </button>
+            <section className="admin-page-hero">
+                <p className="admin-eyebrow">
+                    JOYRIDE ADMIN
+                </p>
 
-            {error && <p>{error}</p>}
+                <h1>Manage Bookings</h1>
 
-            {bookings.length === 0 ? (
-                <p>No bookings found.</p>
-            ) : (
-                bookings.map((booking) => (
-                    <div key={booking._id}>
-                        <hr />
+                <p>
+                    View and manage all customer bookings.
+                </p>
+            </section>
 
-                        <h2>
-                            {booking.bike?.name || "Bike"}
-                        </h2>
+            <section className="admin-bookings-section">
 
-                        <p>
-                            Customer:{" "}
-                            {booking.user?.name || "Unknown"}
-                        </p>
+                <div className="admin-section-header">
+                    <div>
+                        <h2>All Bookings</h2>
 
                         <p>
-                            Email:{" "}
-                            {booking.user?.email || "Unknown"}
+                            {bookings.length} booking
+                            {bookings.length !== 1 ? "s" : ""} found
                         </p>
-
-                        <p>
-                            Pickup Location:{" "}
-                            {booking.pickupLocation}
-                        </p>
-
-                        <p>
-                            Start:{" "}
-                            {new Date(
-                                booking.startDate
-                            ).toLocaleString()}
-                        </p>
-
-                        <p>
-                            End:{" "}
-                            {new Date(
-                                booking.endDate
-                            ).toLocaleString()}
-                        </p>
-
-                        <p>
-                            Total Amount: ₹
-                            {booking.totalAmount}
-                        </p>
-
-                        <p>
-                            Status: {booking.status}
-                        </p>
-
-                        <div>
-                            {booking.status === "pending" && (
-                                <>
-                                    <button
-                                        disabled={
-                                            updatingBooking ===
-                                            booking._id
-                                        }
-                                        onClick={() =>
-                                            updateStatus(
-                                                booking._id,
-                                                "confirmed"
-                                            )
-                                        }
-                                    >
-                                        Confirm
-                                    </button>
-
-                                    <button
-                                        disabled={
-                                            updatingBooking ===
-                                            booking._id
-                                        }
-                                        onClick={() =>
-                                            updateStatus(
-                                                booking._id,
-                                                "cancelled"
-                                            )
-                                        }
-                                    >
-                                        Cancel
-                                    </button>
-                                </>
-                            )}
-
-                            {booking.status === "confirmed" && (
-                                <>
-                                    <button
-                                        disabled={
-                                            updatingBooking ===
-                                            booking._id
-                                        }
-                                        onClick={() =>
-                                            updateStatus(
-                                                booking._id,
-                                                "completed"
-                                            )
-                                        }
-                                    >
-                                        Complete
-                                    </button>
-
-                                    <button
-                                        disabled={
-                                            updatingBooking ===
-                                            booking._id
-                                        }
-                                        onClick={() =>
-                                            updateStatus(
-                                                booking._id,
-                                                "cancelled"
-                                            )
-                                        }
-                                    >
-                                        Cancel
-                                    </button>
-                                </>
-                            )}
-                        </div>
                     </div>
-                ))
-            )}
+
+                    <button
+                        type="button"
+                        className="admin-back-button"
+                        onClick={() => navigate("/admin")}
+                    >
+                        Back to Dashboard
+                    </button>
+                </div>
+
+                {error && (
+                    <div className="admin-error">
+                        {error}
+                    </div>
+                )}
+
+                {bookings.length === 0 ? (
+                    <div className="admin-empty-state">
+                        <h2>No bookings found</h2>
+
+                        <p>
+                            Customer bookings will appear here.
+                        </p>
+                    </div>
+                ) : (
+                    <div className="admin-bookings-list">
+
+                        {bookings.map((booking) => (
+                            <article
+                                className="admin-booking-card"
+                                key={booking._id}
+                            >
+
+                                <div className="admin-booking-header">
+
+                                    <div>
+                                        <p className="admin-booking-label">
+                                            BIKE
+                                        </p>
+
+                                        <h2>
+                                            {booking.bike?.name || "Bike"}
+                                        </h2>
+
+                                        <p className="admin-booking-brand">
+                                            {booking.bike?.brand || "Unknown brand"}
+                                        </p>
+                                    </div>
+
+                                    <span
+                                        className={getStatusClass(
+                                            booking.status
+                                        )}
+                                    >
+                                        {booking.status}
+                                    </span>
+
+                                </div>
+
+                                <div className="admin-booking-details">
+
+                                    <div>
+                                        <p className="admin-booking-label">
+                                            CUSTOMER
+                                        </p>
+
+                                        <strong>
+                                            {booking.user?.name || "Unknown"}
+                                        </strong>
+
+                                        <p>
+                                            {booking.user?.email || "Unknown"}
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <p className="admin-booking-label">
+                                            PICKUP LOCATION
+                                        </p>
+
+                                        <strong>
+                                            {booking.pickupLocation}
+                                        </strong>
+                                    </div>
+
+                                    <div>
+                                        <p className="admin-booking-label">
+                                            START
+                                        </p>
+
+                                        <strong>
+                                            {formatDate(booking.startDate)}
+                                        </strong>
+                                    </div>
+
+                                    <div>
+                                        <p className="admin-booking-label">
+                                            END
+                                        </p>
+
+                                        <strong>
+                                            {formatDate(booking.endDate)}
+                                        </strong>
+                                    </div>
+
+                                    <div>
+                                        <p className="admin-booking-label">
+                                            AMOUNT
+                                        </p>
+
+                                        <strong>
+                                            ₹
+                                            {Number(
+                                                booking.totalAmount || 0
+                                            ).toLocaleString("en-IN")}
+                                        </strong>
+                                    </div>
+
+                                </div>
+
+                                {["pending", "confirmed"].includes(
+                                    booking.status
+                                ) && (
+                                    <div className="admin-booking-actions">
+
+                                        {booking.status === "pending" && (
+                                            <button
+                                                type="button"
+                                                className="admin-action-button admin-confirm-button"
+                                                disabled={
+                                                    updatingBooking ===
+                                                    booking._id
+                                                }
+                                                onClick={() =>
+                                                    updateStatus(
+                                                        booking._id,
+                                                        "confirmed"
+                                                    )
+                                                }
+                                            >
+                                                {updatingBooking ===
+                                                booking._id
+                                                    ? "Updating..."
+                                                    : "Confirm"}
+                                            </button>
+                                        )}
+
+                                        {booking.status === "confirmed" && (
+                                            <button
+                                                type="button"
+                                                className="admin-action-button admin-complete-button"
+                                                disabled={
+                                                    updatingBooking ===
+                                                    booking._id
+                                                }
+                                                onClick={() =>
+                                                    updateStatus(
+                                                        booking._id,
+                                                        "completed"
+                                                    )
+                                                }
+                                            >
+                                                {updatingBooking ===
+                                                booking._id
+                                                    ? "Updating..."
+                                                    : "Complete"}
+                                            </button>
+                                        )}
+
+                                        <button
+                                            type="button"
+                                            className="admin-action-button admin-cancel-button"
+                                            disabled={
+                                                updatingBooking ===
+                                                booking._id
+                                            }
+                                            onClick={() =>
+                                                updateStatus(
+                                                    booking._id,
+                                                    "cancelled"
+                                                )
+                                            }
+                                        >
+                                            {updatingBooking ===
+                                            booking._id
+                                                ? "Updating..."
+                                                : "Cancel"}
+                                        </button>
+
+                                    </div>
+                                )}
+
+                            </article>
+                        ))}
+
+                    </div>
+                )}
+
+            </section>
         </div>
     );
 }

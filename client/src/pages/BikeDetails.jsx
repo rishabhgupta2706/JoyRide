@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
+import { getOptimizedImageUrl } from "../utils/cloudinary";
 
 function BikeDetails() {
     const { id } = useParams();
@@ -83,7 +84,7 @@ function BikeDetails() {
 
             {bike.image && (
                 <img
-                    src={bike.image}
+                    src={getOptimizedImageUrl(bike.image, 1200)}
                     alt={bike.name}
                     width="300"
                 />

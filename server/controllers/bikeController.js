@@ -1,5 +1,11 @@
 const Bike = require("../models/Bike");
 const Booking = require("../models/Booking");
+const cloudinary = require("../config/cloudinary");
+
+
+// =========================================================
+// ADD BIKE
+// =========================================================
 
 const addBike = async (req, res) => {
     try {
@@ -12,9 +18,10 @@ const addBike = async (req, res) => {
             pricePerHour,
             location,
             description,
-            image
-        } = req.body;
+            status
+        } = req.body || {};
 
+        // Validate required fields
         if (
             !name ||
             !brand ||
@@ -30,6 +37,7 @@ const addBike = async (req, res) => {
             });
         }
 
+        // Check duplicate registration number
         const existingBike = await Bike.findOne({
             registrationNumber
         });
@@ -37,10 +45,40 @@ const addBike = async (req, res) => {
         if (existingBike) {
             return res.status(409).json({
                 success: false,
-                message: "A bike with this registration number already exists."
+                message:
+                    "A bike with this registration number already exists."
             });
         }
 
+        // Upload image to Cloudinary
+        let imageUrl = "";
+
+        if (req.file) {
+            const uploadResult = await new Promise(
+                (resolve, reject) => {
+                    const uploadStream =
+                        cloudinary.uploader.upload_stream(
+                            {
+                                folder: "joyride/bikes",
+                                resource_type: "image"
+                            },
+                            (error, result) => {
+                                if (error) {
+                                    reject(error);
+                                } else {
+                                    resolve(result);
+                                }
+                            }
+                        );
+
+                    uploadStream.end(req.file.buffer);
+                }
+            );
+
+            imageUrl = uploadResult.secure_url;
+        }
+
+        // Create bike
         const bike = await Bike.create({
             name,
             brand,
@@ -50,7 +88,8 @@ const addBike = async (req, res) => {
             pricePerHour,
             location,
             description,
-            image
+            status: status || "available",
+            image: imageUrl
         });
 
         return res.status(201).json({
@@ -70,7 +109,10 @@ const addBike = async (req, res) => {
 };
 
 
-// Get all bikes
+// =========================================================
+// GET ALL BIKES
+// =========================================================
+
 const getAllBikes = async (req, res) => {
     try {
         const bikes = await Bike.find();
@@ -90,6 +132,12 @@ const getAllBikes = async (req, res) => {
         });
     }
 };
+
+
+// =========================================================
+// GET BIKE BY ID
+// =========================================================
+
 const getBikeById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -99,7 +147,7 @@ const getBikeById = async (req, res) => {
         if (!bike) {
             return res.status(404).json({
                 success: false,
-                message: "Bike not found"
+                message: "Bike not found."
             });
         }
 
@@ -109,63 +157,137 @@ const getBikeById = async (req, res) => {
         });
 
     } catch (error) {
+        console.log("GET BIKE BY ID ERROR:", error);
+
         return res.status(500).json({
             success: false,
             message: error.message
         });
     }
 };
+
+
+// =========================================================
+// UPDATE BIKE
+// =========================================================
+
 const updateBike = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const bike = await Bike.findByIdAndUpdate(
-            id,
-            req.body,
-            {
-                new: true,
-                runValidators: true
-            }
-        );
+        const body = req.body || {};
 
-        if (!bike) {
+        // Find existing bike
+        const existingBike = await Bike.findById(id);
+
+        if (!existingBike) {
             return res.status(404).json({
                 success: false,
-                message: "Bike not found"
+                message: "Bike not found."
             });
         }
 
+        // Check duplicate registration number
+        if (
+            body.registrationNumber &&
+            body.registrationNumber !==
+                existingBike.registrationNumber
+        ) {
+            const duplicateBike = await Bike.findOne({
+                registrationNumber: body.registrationNumber,
+                _id: { $ne: id }
+            });
+
+            if (duplicateBike) {
+                return res.status(409).json({
+                    success: false,
+                    message:
+                        "A bike with this registration number already exists."
+                });
+            }
+        }
+
+        // Prepare update data
+        const updateData = {
+            name: body.name,
+            brand: body.brand,
+            model: body.model,
+            category: body.category,
+            registrationNumber:
+                body.registrationNumber,
+            pricePerHour:
+                body.pricePerHour,
+            location: body.location,
+            description:
+                body.description,
+            status:
+                body.status
+        };
+
+        // -------------------------------------------------
+        // NEW IMAGE SELECTED
+        // -------------------------------------------------
+
+        if (req.file) {
+            const uploadResult = await new Promise(
+                (resolve, reject) => {
+                    const uploadStream =
+                        cloudinary.uploader.upload_stream(
+                            {
+                                folder: "joyride/bikes",
+                                resource_type: "image"
+                            },
+                            (error, result) => {
+                                if (error) {
+                                    reject(error);
+                                } else {
+                                    resolve(result);
+                                }
+                            }
+                        );
+
+                    uploadStream.end(req.file.buffer);
+                }
+            );
+
+            updateData.image =
+                uploadResult.secure_url;
+        }
+
+        // -------------------------------------------------
+        // NO NEW IMAGE
+        // KEEP EXISTING IMAGE
+        // -------------------------------------------------
+
+        if (!req.file) {
+            updateData.image =
+                existingBike.image;
+        }
+
+        // Update bike
+        const bike =
+            await Bike.findByIdAndUpdate(
+                id,
+                updateData,
+                {
+                    new: true,
+                    runValidators: true
+                }
+            );
+
         return res.status(200).json({
             success: true,
-            message: "Bike updated successfully",
+            message:
+                "Bike updated successfully.",
             bike
         });
 
     } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: error.message
-        });
-    }
-};const deleteBike = async (req, res) => {
-    try {
-        const { id } = req.params;
+        console.log(
+            "UPDATE BIKE ERROR:",
+            error
+        );
 
-        const bike = await Bike.findByIdAndDelete(id);
-
-        if (!bike) {
-            return res.status(404).json({
-                success: false,
-                message: "Bike not found"
-            });
-        }
-
-        return res.status(200).json({
-            success: true,
-            message: "Bike deleted successfully"
-        });
-
-    } catch (error) {
         return res.status(500).json({
             success: false,
             message: error.message
@@ -173,21 +295,17 @@ const updateBike = async (req, res) => {
     }
 };
 
-const checkBikeAvailability = async (req, res) => {
+
+// =========================================================
+// DELETE BIKE
+// =========================================================
+
+const deleteBike = async (req, res) => {
     try {
         const { id } = req.params;
-        const { startDate, endDate } = req.query;
 
-        // Check required dates
-        if (!startDate || !endDate) {
-            return res.status(400).json({
-                success: false,
-                message: "Start date and end date are required."
-            });
-        }
-
-        // Find the bike
-        const bike = await Bike.findById(id);
+        const bike =
+            await Bike.findByIdAndDelete(id);
 
         if (!bike) {
             return res.status(404).json({
@@ -196,59 +314,17 @@ const checkBikeAvailability = async (req, res) => {
             });
         }
 
-        // Check bike status
-        if (["maintenance", "inactive"].includes(bike.status)) {
-            return res.status(200).json({
-                success: true,
-                available: false,
-                message: `Bike is currently ${bike.status}.`
-            });
-        }
-
-        // Convert dates
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-
-        // Validate dates
-        if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid date format."
-            });
-        }
-
-        // End date must be after start date
-        if (end <= start) {
-            return res.status(400).json({
-                success: false,
-                message: "End date must be after start date."
-            });
-        }
-
-        // Check for overlapping bookings
-        const existingBooking = await Booking.findOne({
-            bike: bike._id,
-            status: { $in: ["pending", "confirmed"] },
-            startDate: { $lt: end },
-            endDate: { $gt: start }
-        });
-
-        if (existingBooking) {
-            return res.status(200).json({
-                success: true,
-                available: false,
-                message: "Bike is already booked for the selected time."
-            });
-        }
-
         return res.status(200).json({
             success: true,
-            available: true,
-            message: "Bike is available for the selected time."
+            message:
+                "Bike deleted successfully."
         });
 
     } catch (error) {
-        console.log("CHECK BIKE AVAILABILITY ERROR:", error);
+        console.log(
+            "DELETE BIKE ERROR:",
+            error
+        );
 
         return res.status(500).json({
             success: false,
@@ -258,7 +334,130 @@ const checkBikeAvailability = async (req, res) => {
 };
 
 
+// =========================================================
+// CHECK BIKE AVAILABILITY
+// =========================================================
 
+const checkBikeAvailability = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { startDate, endDate } =
+            req.query;
+
+        // Check required dates
+        if (!startDate || !endDate) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Start date and end date are required."
+            });
+        }
+
+        // Find bike
+        const bike =
+            await Bike.findById(id);
+
+        if (!bike) {
+            return res.status(404).json({
+                success: false,
+                message:
+                    "Bike not found."
+            });
+        }
+
+        // Check bike status
+        if (
+            ["maintenance", "inactive"].includes(
+                bike.status
+            )
+        ) {
+            return res.status(200).json({
+                success: true,
+                available: false,
+                message:
+                    `Bike is currently ${bike.status}.`
+            });
+        }
+
+        // Convert dates
+        const start =
+            new Date(startDate);
+
+        const end =
+            new Date(endDate);
+
+        // Validate dates
+        if (
+            isNaN(start.getTime()) ||
+            isNaN(end.getTime())
+        ) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Invalid date format."
+            });
+        }
+
+        // End date must be after start date
+        if (end <= start) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "End date must be after start date."
+            });
+        }
+
+        // Check overlapping bookings
+        const existingBooking =
+            await Booking.findOne({
+                bike: bike._id,
+                status: {
+                    $in: [
+                        "pending",
+                        "confirmed"
+                    ]
+                },
+                startDate: {
+                    $lt: end
+                },
+                endDate: {
+                    $gt: start
+                }
+            });
+
+        if (existingBooking) {
+            return res.status(200).json({
+                success: true,
+                available: false,
+                message:
+                    "Bike is already booked for the selected time."
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            available: true,
+            message:
+                "Bike is available for the selected time."
+        });
+
+    } catch (error) {
+        console.log(
+            "CHECK BIKE AVAILABILITY ERROR:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+
+// =========================================================
+// EXPORTS
+// =========================================================
 
 module.exports = {
     addBike,

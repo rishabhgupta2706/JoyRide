@@ -13,10 +13,11 @@ const {
 
 const protect = require("../middleware/authMiddleware");
 const adminOnly = require("../middleware/roleMiddleware");
+const upload = require("../middleware/uploadMiddleware");
 
 // Admin-only operations
-router.post("/", protect, adminOnly, addBike);
-router.put("/:id", protect, adminOnly, updateBike);
+router.post("/", protect, adminOnly,upload.single("image"), addBike);
+router.put("/:id", protect, adminOnly,upload.single("image"), updateBike);
 router.delete("/:id", protect, adminOnly, deleteBike);
 
 // Authenticated user operations

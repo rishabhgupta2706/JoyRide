@@ -1,24 +1,13 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../services/api";
+import { getOptimizedImageUrl } from "../utils/cloudinary";
 
 function Booking() {
     const location = useLocation();
     const navigate = useNavigate();
 
     const bike = location.state?.bike;
-
-    const getMinDateTime = () => {
-    const now = new Date();
-
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    const hours = String(now.getHours()).padStart(2, "0");
-    const minutes = String(now.getMinutes()).padStart(2, "0");
-
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-};
 
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
@@ -30,6 +19,20 @@ function Booking() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
+    // Get current date and time in the format required by datetime-local
+    const getMinDateTime = () => {
+        const now = new Date();
+
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+        const hours = String(now.getHours()).padStart(2, "0");
+        const minutes = String(now.getMinutes()).padStart(2, "0");
+
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    };
+
+    // Check bike availability whenever dates change
     useEffect(() => {
         const checkAvailability = async () => {
             if (!startDate || !endDate || !bike) {
@@ -39,8 +42,9 @@ function Booking() {
 
             const start = new Date(startDate);
             const end = new Date(endDate);
+            const now = new Date();
 
-            if (start <= new Date() || end <= start) {
+            if (start <= now || end <= start) {
                 setAvailability(null);
                 return;
             }
@@ -80,18 +84,27 @@ function Booking() {
         checkAvailability();
     }, [startDate, endDate, bike]);
 
+    // If bike information was not passed from the previous page
     if (!bike) {
         return (
             <div>
                 <h2>Bike information not found</h2>
 
-                <button onClick={() => navigate("/bikes")}>
+                <p>
+                    Please select a bike again before making a booking.
+                </p>
+
+                <button
+                    type="button"
+                    onClick={() => navigate("/bikes")}
+                >
                     Back to Bikes
                 </button>
             </div>
         );
     }
 
+    // Calculate rental duration
     const calculateHours = () => {
         if (!startDate || !endDate) {
             return 0;
@@ -113,14 +126,27 @@ function Booking() {
 
     const hours = calculateHours();
 
-    const estimatedAmount = hours * bike.pricePerHour;
+    const estimatedAmount =
+        hours * Number(bike.pricePerHour || 0);
 
+    // When start date changes, reset invalid end date
+    const handleStartDateChange = (value) => {
+        setStartDate(value);
+        setAvailability(null);
+        setError("");
+
+        if (endDate && new Date(endDate) <= new Date(value)) {
+            setEndDate("");
+        }
+    };
+
+    // Handle booking submission
     const handleBooking = async (e) => {
         e.preventDefault();
 
         setError("");
 
-        if (!startDate || !endDate || !pickupLocation) {
+        if (!startDate || !endDate || !pickupLocation.trim()) {
             setError("All fields are required.");
             return;
         }
@@ -143,6 +169,13 @@ function Booking() {
             return;
         }
 
+        if (hours <= 0) {
+            setError(
+                "Rental duration must be greater than zero."
+            );
+            return;
+        }
+
         if (!availability?.available) {
             setError(
                 "Please select an available time before booking."
@@ -150,14 +183,14 @@ function Booking() {
             return;
         }
 
-        setLoading(true);
-
         try {
+            setLoading(true);
+
             const response = await api.post("/bookings", {
                 bike: bike._id,
                 startDate,
                 endDate,
-                pickupLocation
+                pickupLocation: pickupLocation.trim()
             });
 
             console.log(
@@ -167,6 +200,11 @@ function Booking() {
 
             navigate("/bookings");
         } catch (error) {
+            console.error(
+                "CREATE BOOKING ERROR:",
+                error
+            );
+
             setError(
                 error.response?.data?.message ||
                 "Booking failed. Please try again."
@@ -178,6 +216,9 @@ function Booking() {
 
     return (
         <div>
+
+            {/* Back button */}
+
             <button
                 type="button"
                 onClick={() =>
@@ -187,14 +228,44 @@ function Booking() {
                 Back to Bike
             </button>
 
-            <h1>Book {bike.name}</h1>
 
-            <p>
-                Price: ₹{bike.pricePerHour}/hour
-            </p>
+            {/* Bike information */}
+
+            <div>
+
+                {bike.image && (
+                    <img
+                        src={getOptimizedImageUrl(
+                            bike.image,
+                            800
+                        )}
+                        alt={bike.name}
+                    />
+                )}
+
+                <h1>
+                    Book {bike.name}
+                </h1>
+
+                <p>
+                    {bike.brand} {bike.model}
+                </p>
+
+                <p>
+                    ₹{bike.pricePerHour}/hour
+                </p>
+
+            </div>
+
+
+            {/* Booking form */}
 
             <form onSubmit={handleBooking}>
+
+                {/* Start date */}
+
                 <div>
+
                     <label>
                         Start Date and Time
                     </label>
@@ -204,13 +275,20 @@ function Booking() {
                         value={startDate}
                         min={getMinDateTime()}
                         onChange={(e) =>
-                            setStartDate(e.target.value)
+                            handleStartDateChange(
+                                e.target.value
+                            )
                         }
                         required
                     />
+
                 </div>
 
+
+                {/* End date */}
+
                 <div>
+
                     <label>
                         End Date and Time
                     </label>
@@ -218,12 +296,22 @@ function Booking() {
                     <input
                         type="datetime-local"
                         value={endDate}
-                        onChange={(e) =>
-                            setEndDate(e.target.value)
+                        min={
+                            startDate ||
+                            getMinDateTime()
                         }
+                        onChange={(e) => {
+                            setEndDate(e.target.value);
+                            setAvailability(null);
+                            setError("");
+                        }}
                         required
                     />
+
                 </div>
+
+
+                {/* Availability status */}
 
                 {checkingAvailability && (
                     <p>
@@ -244,7 +332,11 @@ function Booking() {
                         </p>
                     )}
 
+
+                {/* Pickup location */}
+
                 <div>
+
                     <label>
                         Pickup Location
                     </label>
@@ -260,22 +352,41 @@ function Booking() {
                         placeholder="Enter pickup location"
                         required
                     />
+
                 </div>
 
+
+                {/* Price calculation */}
+
                 <div>
+
                     <p>
                         Rental Hours: {hours}
+                    </p>
+
+                    <p>
+                        Price Per Hour: ₹
+                        {bike.pricePerHour}
                     </p>
 
                     <p>
                         Estimated Amount: ₹
                         {estimatedAmount}
                     </p>
+
                 </div>
 
+
+                {/* Error */}
+
                 {error && (
-                    <p>{error}</p>
+                    <p>
+                        {error}
+                    </p>
                 )}
+
+
+                {/* Submit */}
 
                 <button
                     type="submit"
@@ -289,7 +400,9 @@ function Booking() {
                         ? "Creating Booking..."
                         : "Confirm Booking"}
                 </button>
+
             </form>
+
         </div>
     );
 }

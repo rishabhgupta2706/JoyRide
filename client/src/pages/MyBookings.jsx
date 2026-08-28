@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import { getOptimizedImageUrl } from "../utils/cloudinary";
 
 function MyBookings() {
     const navigate = useNavigate();
@@ -194,7 +195,7 @@ function MyBookings() {
 
                                     {bike?.image ? (
                                         <img
-                                            src={bike.image}
+                                            src={getOptimizedImageUrl(bike.image, 800)}
                                             alt={
                                                 bike.name ||
                                                 "Bike"

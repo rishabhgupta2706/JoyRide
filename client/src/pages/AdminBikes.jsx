@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import { getOptimizedImageUrl } from "../utils/cloudinary";
 
 function AdminBikes() {
     const navigate = useNavigate();
@@ -10,6 +11,7 @@ function AdminBikes() {
     const [error, setError] = useState("");
 
     const [editingBikeId, setEditingBikeId] = useState(null);
+    const [imageFile, setImageFile] = useState(null);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -34,7 +36,7 @@ function AdminBikes() {
                 }
             });
 
-            setBikes(response.data.bikes);
+            setBikes(response.data.bikes || []);
         } catch (error) {
             console.error("GET BIKES ERROR:", error);
 
@@ -60,6 +62,30 @@ function AdminBikes() {
         }));
     };
 
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+
+        if (!file) {
+            setImageFile(null);
+            return;
+        }
+
+        if (!file.type.startsWith("image/")) {
+            setError("Please select a valid image file.");
+            setImageFile(null);
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            setError("Image size must be less than 5 MB.");
+            setImageFile(null);
+            return;
+        }
+
+        setError("");
+        setImageFile(file);
+    };
+
     const resetForm = () => {
         setFormData({
             name: "",
@@ -74,64 +100,83 @@ function AdminBikes() {
             status: "available"
         });
 
+        setImageFile(null);
         setEditingBikeId(null);
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        setError("");
+    setError("");
 
-        try {
-            const token = localStorage.getItem("token");
+    try {
+        const token = localStorage.getItem("token");
 
-            if (editingBikeId) {
-                await api.put(
-                    `/bikes/${editingBikeId}`,
-                    {
-                        ...formData,
-                        pricePerHour: Number(
-                            formData.pricePerHour
-                        )
-                    },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    }
-                );
+        const data = new FormData();
 
-                alert("Bike updated successfully.");
-            } else {
-                await api.post(
-                    "/bikes",
-                    {
-                        ...formData,
-                        pricePerHour: Number(
-                            formData.pricePerHour
-                        )
-                    },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    }
-                );
+        data.append("name", formData.name);
+        data.append("brand", formData.brand);
+        data.append("model", formData.model);
+        data.append("category", formData.category);
 
-                alert("Bike added successfully.");
-            }
+        data.append(
+            "registrationNumber",
+            formData.registrationNumber
+        );
 
-            resetForm();
-            await fetchBikes();
-        } catch (error) {
-            console.error("SAVE BIKE ERROR:", error);
+        data.append(
+            "pricePerHour",
+            Number(formData.pricePerHour)
+        );
 
-            setError(
-                error.response?.data?.message ||
-                "Failed to save bike."
-            );
+        data.append("location", formData.location);
+        data.append("description", formData.description);
+        data.append("status", formData.status);
+
+        // Only send an image when a new image is selected
+        if (imageFile) {
+            data.append("image", imageFile);
         }
-    };
+
+        if (editingBikeId) {
+            await api.put(
+                `/bikes/${editingBikeId}`,
+                data,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
+            alert("Bike updated successfully.");
+        } else {
+            await api.post(
+                "/bikes",
+                data,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
+            alert("Bike added successfully.");
+        }
+
+        resetForm();
+
+        await fetchBikes();
+
+    } catch (error) {
+        console.error("SAVE BIKE ERROR:", error);
+
+        setError(
+            error.response?.data?.message ||
+            "Failed to save bike."
+        );
+    }
+};
 
     const handleEdit = (bike) => {
         setEditingBikeId(bike._id);
@@ -141,16 +186,15 @@ function AdminBikes() {
             brand: bike.brand || "",
             model: bike.model || "",
             category: bike.category || "",
-            registrationNumber:
-                bike.registrationNumber || "",
-            pricePerHour:
-                bike.pricePerHour || "",
+            registrationNumber: bike.registrationNumber || "",
+            pricePerHour: bike.pricePerHour || "",
             location: bike.location || "",
-            description:
-                bike.description || "",
+            description: bike.description || "",
             image: bike.image || "",
             status: bike.status || "available"
         });
+
+        setImageFile(null);
 
         window.scrollTo({
             top: 0,
@@ -180,10 +224,7 @@ function AdminBikes() {
 
             await fetchBikes();
         } catch (error) {
-            console.error(
-                "DELETE BIKE ERROR:",
-                error
-            );
+            console.error("DELETE BIKE ERROR:", error);
 
             alert(
                 error.response?.data?.message ||
@@ -193,254 +234,436 @@ function AdminBikes() {
     };
 
     if (loading) {
-        return <h2>Loading bikes...</h2>;
+        return (
+            <div className="admin-bikes-page">
+                <div className="admin-bikes-message">
+                    Loading bikes...
+                </div>
+            </div>
+        );
     }
 
     return (
-        <div>
-            <h1>Admin Bike Management</h1>
+        <div className="admin-bikes-page">
 
-            <button
-                onClick={() =>
-                    navigate("/admin")
-                }
-            >
-                Back to Admin Dashboard
-            </button>
+            {/* HEADER */}
 
-            <hr />
-
-            <h2>
-                {editingBikeId
-                    ? "Edit Bike"
-                    : "Add New Bike"}
-            </h2>
-
-            <form onSubmit={handleSubmit}>
+            <section className="admin-bikes-header">
                 <div>
-                    <label>Bike Name</label>
+                    <p className="admin-bikes-label">
+                        JOYRIDE ADMIN
+                    </p>
 
-                    <input
-                        type="text"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        required
-                    />
+                    <h1>Manage Bikes</h1>
+
+                    <p>
+                        Add, update, and manage your rental fleet.
+                    </p>
                 </div>
 
-                <div>
-                    <label>Brand</label>
-
-                    <input
-                        type="text"
-                        name="brand"
-                        value={formData.brand}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label>Model</label>
-
-                    <input
-                        type="text"
-                        name="model"
-                        value={formData.model}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label>Category</label>
-
-                    <input
-                        type="text"
-                        name="category"
-                        value={formData.category}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label>
-                        Registration Number
-                    </label>
-
-                    <input
-                        type="text"
-                        name="registrationNumber"
-                        value={
-                            formData.registrationNumber
-                        }
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label>Price Per Hour</label>
-
-                    <input
-                        type="number"
-                        name="pricePerHour"
-                        value={
-                            formData.pricePerHour
-                        }
-                        onChange={handleChange}
-                        min="0"
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label>Location</label>
-
-                    <input
-                        type="text"
-                        name="location"
-                        value={formData.location}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label>Description</label>
-
-                    <textarea
-                        name="description"
-                        value={
-                            formData.description
-                        }
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div>
-                    <label>Image URL</label>
-
-                    <input
-                        type="text"
-                        name="image"
-                        value={formData.image}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div>
-                    <label>Bike Status</label>
-
-                    <select
-                        name="status"
-                        value={formData.status}
-                        onChange={handleChange}
-                    >
-                        <option value="available">
-                            Available
-                        </option>
-
-                        <option value="maintenance">
-                            Maintenance
-                        </option>
-
-                        <option value="inactive">
-                            Inactive
-                        </option>
-                    </select>
-                </div>
-
-                {error && <p>{error}</p>}
-
-                <button type="submit">
-                    {editingBikeId
-                        ? "Update Bike"
-                        : "Add Bike"}
+                <button
+                    className="admin-back-button"
+                    onClick={() => navigate("/admin")}
+                >
+                    Back to Dashboard
                 </button>
+            </section>
 
-                {editingBikeId && (
-                    <button
-                        type="button"
-                        onClick={resetForm}
-                    >
-                        Cancel Edit
-                    </button>
-                )}
-            </form>
 
-            <hr />
+            {/* ERROR */}
 
-            <h2>All Bikes</h2>
+            {error && (
+                <div className="admin-bikes-error">
+                    {error}
+                </div>
+            )}
 
-            {bikes.length === 0 ? (
-                <p>No bikes found.</p>
-            ) : (
-                bikes.map((bike) => (
-                    <div key={bike._id}>
-                        <hr />
 
-                        <h2>{bike.name}</h2>
+            {/* ADD / EDIT FORM */}
 
-                        <p>
-                            Brand: {bike.brand}
+            <section className="admin-bike-form-section">
+
+                <div className="admin-section-heading">
+                    <div>
+                        <p className="admin-bikes-label">
+                            {editingBikeId
+                                ? "UPDATE FLEET"
+                                : "NEW FLEET ITEM"}
                         </p>
 
-                        <p>
-                            Model: {bike.model}
-                        </p>
+                        <h2>
+                            {editingBikeId
+                                ? "Edit Bike"
+                                : "Add New Bike"}
+                        </h2>
+                    </div>
+                </div>
 
-                        <p>
-                            Category: {bike.category}
-                        </p>
 
-                        <p>
-                            Registration Number:{" "}
-                            {bike.registrationNumber}
-                        </p>
+                <form
+                    className="admin-bike-form"
+                    onSubmit={handleSubmit}
+                >
 
-                        <p>
-                            Price: ₹
-                            {bike.pricePerHour}/hour
-                        </p>
+                    <div className="admin-form-grid">
 
-                        <p>
-                            Location: {bike.location}
-                        </p>
+                        <div className="admin-form-group">
+                            <label>Bike Name</label>
 
-                        <p>
-                            Status: {bike.status}
-                        </p>
+                            <input
+                                type="text"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
+                                placeholder="Classic 350"
+                                required
+                            />
+                        </div>
 
-                        {bike.description && (
-                            <p>
-                                Description:{" "}
-                                {bike.description}
-                            </p>
+
+                        <div className="admin-form-group">
+                            <label>Brand</label>
+
+                            <input
+                                type="text"
+                                name="brand"
+                                value={formData.brand}
+                                onChange={handleChange}
+                                placeholder="Royal Enfield"
+                                required
+                            />
+                        </div>
+
+
+                        <div className="admin-form-group">
+                            <label>Model</label>
+
+                            <input
+                                type="text"
+                                name="model"
+                                value={formData.model}
+                                onChange={handleChange}
+                                placeholder="2025"
+                                required
+                            />
+                        </div>
+
+
+                        <div className="admin-form-group">
+                            <label>Category</label>
+
+                            <input
+                                type="text"
+                                name="category"
+                                value={formData.category}
+                                onChange={handleChange}
+                                placeholder="Cruiser"
+                                required
+                            />
+                        </div>
+
+
+                        <div className="admin-form-group">
+                            <label>Registration Number</label>
+
+                            <input
+                                type="text"
+                                name="registrationNumber"
+                                value={formData.registrationNumber}
+                                onChange={handleChange}
+                                placeholder="DL01AB1234"
+                                required
+                            />
+                        </div>
+
+
+                        <div className="admin-form-group">
+                            <label>Price Per Hour</label>
+
+                            <input
+                                type="number"
+                                name="pricePerHour"
+                                value={formData.pricePerHour}
+                                onChange={handleChange}
+                                placeholder="250"
+                                min="0"
+                                required
+                            />
+                        </div>
+
+
+                        <div className="admin-form-group">
+                            <label>Location</label>
+
+                            <input
+                                type="text"
+                                name="location"
+                                value={formData.location}
+                                onChange={handleChange}
+                                placeholder="Delhi"
+                                required
+                            />
+                        </div>
+
+
+                        <div className="admin-form-group">
+                            <label>Bike Status</label>
+
+                            <select
+                                name="status"
+                                value={formData.status}
+                                onChange={handleChange}
+                            >
+                                <option value="available">
+                                    Available
+                                </option>
+
+                                <option value="maintenance">
+                                    Maintenance
+                                </option>
+
+                                <option value="inactive">
+                                    Inactive
+                                </option>
+                            </select>
+                        </div>
+
+
+                        {/* IMAGE UPLOAD */}
+
+                        <div className="admin-form-group admin-form-full">
+                            <label>Bike Image</label>
+
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                            />
+
+                            {imageFile && (
+                                <p>
+                                    Selected image:{" "}
+                                    <strong>
+                                        {imageFile.name}
+                                    </strong>
+                                </p>
+                            )}
+
+                            {editingBikeId &&
+                                formData.image &&
+                                !imageFile && (
+                                    <p>
+                                        Existing image will be kept.
+                                    </p>
+                                )}
+                        </div>
+
+
+                        <div className="admin-form-group admin-form-full">
+                            <label>Description</label>
+
+                            <textarea
+                                name="description"
+                                value={formData.description}
+                                onChange={handleChange}
+                                placeholder="Enter bike description..."
+                                rows="4"
+                            />
+                        </div>
+
+                    </div>
+
+
+                    <div className="admin-form-actions">
+
+                        <button
+                            type="submit"
+                            className="admin-primary-button"
+                        >
+                            {editingBikeId
+                                ? "Update Bike"
+                                : "Add Bike"}
+                        </button>
+
+                        {editingBikeId && (
+                            <button
+                                type="button"
+                                className="admin-secondary-button"
+                                onClick={resetForm}
+                            >
+                                Cancel Edit
+                            </button>
                         )}
 
-                        <button
-                            onClick={() =>
-                                handleEdit(bike)
-                            }
-                        >
-                            Edit
-                        </button>
-
-                        <button
-                            onClick={() =>
-                                handleDelete(
-                                    bike._id
-                                )
-                            }
-                        >
-                            Delete
-                        </button>
                     </div>
-                ))
-            )}
+
+                </form>
+
+            </section>
+
+
+            {/* ALL BIKES */}
+
+            <section className="admin-all-bikes-section">
+
+                <div className="admin-section-heading">
+                    <div>
+                        <p className="admin-bikes-label">
+                            FLEET OVERVIEW
+                        </p>
+
+                        <h2>All Bikes</h2>
+
+                        <p>
+                            {bikes.length} bike
+                            {bikes.length !== 1 ? "s" : ""} in your fleet.
+                        </p>
+                    </div>
+                </div>
+
+
+                {bikes.length === 0 ? (
+
+                    <div className="admin-empty-state">
+                        <h3>No bikes found</h3>
+
+                        <p>
+                            Add your first bike using the form above.
+                        </p>
+                    </div>
+
+                ) : (
+
+                    <div className="admin-bike-grid">
+
+                        {bikes.map((bike) => (
+
+                            <div
+                                className="admin-bike-card"
+                                key={bike._id}
+                            >
+
+                                <div className="admin-bike-image">
+
+                                    {bike.image ? (
+                                        <img
+                                            src={getOptimizedImageUrl(bike.image, 800)}
+                                            alt={bike.name}
+                                        />
+                                    ) : (
+                                        <span>
+                                            No Image
+                                        </span>
+                                    )}
+
+                                </div>
+
+
+                                <div className="admin-bike-content">
+
+                                    <div className="admin-bike-card-header">
+
+                                        <div>
+                                            <h3>
+                                                {bike.name}
+                                            </h3>
+
+                                            <p>
+                                                {bike.brand}
+                                            </p>
+                                        </div>
+
+                                        <span
+                                            className={`admin-bike-status ${bike.status}`}
+                                        >
+                                            {bike.status}
+                                        </span>
+
+                                    </div>
+
+
+                                    <div className="admin-bike-details">
+
+                                        <div>
+                                            <span>MODEL</span>
+                                            <strong>
+                                                {bike.model}
+                                            </strong>
+                                        </div>
+
+                                        <div>
+                                            <span>CATEGORY</span>
+                                            <strong>
+                                                {bike.category}
+                                            </strong>
+                                        </div>
+
+                                        <div>
+                                            <span>LOCATION</span>
+                                            <strong>
+                                                {bike.location}
+                                            </strong>
+                                        </div>
+
+                                        <div>
+                                            <span>PRICE</span>
+                                            <strong>
+                                                ₹{bike.pricePerHour}/hr
+                                            </strong>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div className="admin-bike-registration">
+                                        Registration:
+                                        <strong>
+                                            {bike.registrationNumber}
+                                        </strong>
+                                    </div>
+
+
+                                    {bike.description && (
+                                        <p className="admin-bike-description">
+                                            {bike.description}
+                                        </p>
+                                    )}
+
+
+                                    <div className="admin-bike-actions">
+
+                                        <button
+                                            className="admin-edit-button"
+                                            onClick={() =>
+                                                handleEdit(bike)
+                                            }
+                                        >
+                                            Edit
+                                        </button>
+
+                                        <button
+                                            className="admin-delete-button"
+                                            onClick={() =>
+                                                handleDelete(bike._id)
+                                            }
+                                        >
+                                            Delete
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        ))}
+
+                    </div>
+
+                )}
+
+            </section>
+
         </div>
     );
 }

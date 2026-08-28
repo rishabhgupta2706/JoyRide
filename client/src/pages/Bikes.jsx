@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import { getOptimizedImageUrl } from "../utils/cloudinary";
 
 function Bikes() {
     const [bikes, setBikes] = useState([]);
@@ -23,8 +24,10 @@ function Bikes() {
                     }
                 });
 
-                setBikes(response.data.bikes);
+                setBikes(response.data.bikes || []);
             } catch (error) {
+                console.error("GET BIKES ERROR:", error);
+
                 setError(
                     error.response?.data?.message ||
                     "Failed to load bikes."
@@ -62,6 +65,10 @@ function Bikes() {
         return matchesSearch && matchesCategory;
     });
 
+    const handleViewDetails = (bike) => {
+        navigate(`/bikes/${bike._id}`);
+    };
+
     if (loading) {
         return (
             <div className="bikes-page">
@@ -84,14 +91,21 @@ function Bikes() {
 
     return (
         <div className="bikes-page">
+
+            {/* HERO */}
+
             <section className="bikes-hero">
+
                 <h1>Explore Bikes</h1>
 
                 <p>
                     Find the right bike for your next ride.
                 </p>
 
+                {/* FILTERS */}
+
                 <div className="bike-filters">
+
                     <input
                         type="text"
                         placeholder="Search by bike, brand, model or location..."
@@ -118,92 +132,155 @@ function Bikes() {
                             </option>
                         ))}
                     </select>
+
                 </div>
+
             </section>
 
+
+            {/* NO RESULTS */}
+
             {filteredBikes.length === 0 ? (
+
                 <div className="bikes-message">
+
                     <h2>No bikes found</h2>
 
                     <p>
                         Try changing your search or category.
                     </p>
+
                 </div>
+
             ) : (
+
+                /* BIKE GRID */
+
                 <section className="bike-grid">
-                    {filteredBikes.map((bike) => (
-                        <div
-                            className="bike-card"
-                            key={bike._id}
-                        >
-                            <div className="bike-image">
-                                {bike.image ? (
-                                    <img
-                                        src={bike.image}
-                                        alt={bike.name}
-                                    />
-                                ) : (
-                                    <div className="bike-image-placeholder">
-                                        No Image
-                                    </div>
-                                )}
-                            </div>
 
-                            <div className="bike-card-content">
-                                <div className="bike-card-header">
-                                    <h2>{bike.name}</h2>
+                    {filteredBikes.map((bike) => {
 
-                                    <span
-                                        className={
-                                            bike.status === "available"
-                                                ? "bike-status available"
-                                                : "bike-status"
-                                        }
-                                    >
-                                        {bike.status}
-                                    </span>
+                        const isAvailable =
+                            bike.status === "available";
+
+                        return (
+                            <div
+                                className="bike-card"
+                                key={bike._id}
+                            >
+
+                                {/* IMAGE */}
+
+                                <div className="bike-image">
+
+                                    {bike.image ? (
+                                        <img
+                                            src={getOptimizedImageUrl(
+                                                bike.image,
+                                                800
+                                            )}
+                                            alt={bike.name}
+                                        />
+                                    ) : (
+                                        <div className="bike-image-placeholder">
+                                            No Image
+                                        </div>
+                                    )}
+
                                 </div>
 
-                                <p className="bike-brand">
-                                    {bike.brand} {bike.model}
-                                </p>
 
-                                <div className="bike-info">
-                                    <p>
-                                        Category: {bike.category}
-                                    </p>
+                                {/* CONTENT */}
 
-                                    <p>
-                                        Location: {bike.location}
-                                    </p>
-                                </div>
+                                <div className="bike-card-content">
 
-                                <div className="bike-card-footer">
-                                    <div className="bike-price">
-                                        <strong>
-                                            ₹{bike.pricePerHour}
-                                        </strong>
+                                    {/* HEADER */}
 
-                                        <span>
-                                            /hour
+                                    <div className="bike-card-header">
+
+                                        <h2>
+                                            {bike.name}
+                                        </h2>
+
+                                        <span
+                                            className={
+                                                isAvailable
+                                                    ? "bike-status available"
+                                                    : "bike-status"
+                                            }
+                                        >
+                                            {bike.status}
                                         </span>
+
                                     </div>
 
-                                    <button
-                                        onClick={() =>
-                                            navigate(
-                                                `/bikes/${bike._id}`
-                                            )
-                                        }
-                                    >
-                                        View Details
-                                    </button>
+
+                                    {/* BRAND / MODEL */}
+
+                                    <p className="bike-brand">
+                                        {bike.brand}{" "}
+                                        {bike.model}
+                                    </p>
+
+
+                                    {/* INFORMATION */}
+
+                                    <div className="bike-info">
+
+                                        <p>
+                                            Category:{" "}
+                                            {bike.category}
+                                        </p>
+
+                                        <p>
+                                            Location:{" "}
+                                            {bike.location}
+                                        </p>
+
+                                    </div>
+
+
+                                    {/* FOOTER */}
+
+                                    <div className="bike-card-footer">
+
+                                        <div className="bike-price">
+
+                                            <strong>
+                                                ₹
+                                                {
+                                                    bike.pricePerHour
+                                                }
+                                            </strong>
+
+                                            <span>
+                                                /hour
+                                            </span>
+
+                                        </div>
+
+
+                                        <button
+                                            onClick={() =>
+                                                handleViewDetails(
+                                                    bike
+                                                )
+                                            }
+                                        >
+                                            View Details
+                                        </button>
+
+                                    </div>
+
                                 </div>
+
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
+
                 </section>
             )}
+
         </div>
     );
 }
