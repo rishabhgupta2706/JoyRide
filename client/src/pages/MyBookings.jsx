@@ -46,6 +46,7 @@ function MyBookings() {
 
         try {
             setCancellingId(bookingId);
+            setError("");
 
             await api.patch(
                 `/bookings/${bookingId}/cancel`,
@@ -75,16 +76,203 @@ function MyBookings() {
         });
     };
 
-    const getStatusClass = (status) => {
-        return `my-booking-status ${status}`;
+    const formatAmount = (amount) => {
+        return Number(amount || 0).toLocaleString("en-IN");
+    };
+
+    // Separate bookings by status
+    const upcomingBookings = bookings.filter(
+        (booking) =>
+            booking.status === "pending" ||
+            booking.status === "confirmed"
+    );
+
+    const completedBookings = bookings.filter(
+        (booking) =>
+            booking.status === "completed"
+    );
+
+    const cancelledBookings = bookings.filter(
+        (booking) =>
+            booking.status === "cancelled"
+    );
+
+    const renderBookingCard = (booking) => {
+        const bike = booking.bike;
+
+        return (
+            <article
+                className="my-booking-card"
+                key={booking._id}
+            >
+
+                {/* Bike Image */}
+
+                <div className="my-booking-image">
+
+                    {bike?.image ? (
+                        <img
+                            src={getOptimizedImageUrl(
+                                bike.image,
+                                800
+                            )}
+                            alt={
+                                bike.name ||
+                                "Bike"
+                            }
+                        />
+                    ) : (
+                        <div>
+                            No Image
+                        </div>
+                    )}
+
+                </div>
+
+
+                {/* Booking Content */}
+
+                <div className="my-booking-content">
+
+                    {/* Header */}
+
+                    <div className="my-booking-header-row">
+
+                        <div>
+
+                            <p className="my-booking-label">
+                                BIKE RENTAL
+                            </p>
+
+                            <h2>
+                                {bike?.name || "Bike"}
+                            </h2>
+
+                            <p className="my-booking-brand">
+                                {bike?.brand || "N/A"}{" "}
+                                {bike?.model || ""}
+                            </p>
+
+                        </div>
+
+                        <span
+                            className={`my-booking-status ${booking.status}`}
+                        >
+                            {booking.status}
+                        </span>
+
+                    </div>
+
+
+                    {/* Booking Information */}
+
+                    <div className="my-booking-info">
+
+                        <div>
+                            <span>
+                                Pickup Location
+                            </span>
+
+                            <strong>
+                                {booking.pickupLocation}
+                            </strong>
+                        </div>
+
+
+                        <div>
+                            <span>
+                                Start
+                            </span>
+
+                            <strong>
+                                {formatDate(
+                                    booking.startDate
+                                )}
+                            </strong>
+                        </div>
+
+
+                        <div>
+                            <span>
+                                End
+                            </span>
+
+                            <strong>
+                                {formatDate(
+                                    booking.endDate
+                                )}
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    {/* Footer */}
+
+                    <div className="my-booking-footer">
+
+                        <div>
+
+                            <span>
+                                Total Amount
+                            </span>
+
+                            <strong>
+                                ₹
+                                {formatAmount(
+                                    booking.totalAmount
+                                )}
+                            </strong>
+
+                        </div>
+
+
+                        {/* Cancel Button */}
+
+                        {[
+                            "pending",
+                            "confirmed"
+                        ].includes(
+                            booking.status
+                        ) && (
+                            <button
+                                type="button"
+                                className="my-booking-cancel"
+                                disabled={
+                                    cancellingId ===
+                                    booking._id
+                                }
+                                onClick={() =>
+                                    cancelBooking(
+                                        booking._id
+                                    )
+                                }
+                            >
+                                {cancellingId ===
+                                booking._id
+                                    ? "Cancelling..."
+                                    : "Cancel Booking"}
+                            </button>
+                        )}
+
+                    </div>
+
+                </div>
+
+            </article>
+        );
     };
 
     if (loading) {
         return (
             <div className="my-bookings-page">
+
                 <div className="my-bookings-message">
+
                     Loading your bookings...
+
                 </div>
+
             </div>
         );
     }
@@ -112,7 +300,7 @@ function MyBookings() {
             </section>
 
 
-            {/* Back Button */}
+            {/* Top Actions */}
 
             <div className="my-bookings-top-actions">
 
@@ -146,7 +334,7 @@ function MyBookings() {
             )}
 
 
-            {/* Empty State */}
+            {/* No bookings */}
 
             {!error && bookings.length === 0 && (
                 <section className="my-bookings-empty">
@@ -174,183 +362,88 @@ function MyBookings() {
             )}
 
 
-            {/* Booking List */}
+            {/* Upcoming */}
 
-            {bookings.length > 0 && (
-                <section className="my-bookings-list">
+            {upcomingBookings.length > 0 && (
+                <section className="my-bookings-section">
 
-                    {bookings.map((booking) => {
+                    <div className="my-bookings-section-header">
 
-                        const bike = booking.bike;
+                        <h2>
+                            Upcoming Bookings
+                        </h2>
 
-                        return (
-                            <article
-                                className="my-booking-card"
-                                key={booking._id}
-                            >
+                        <span>
+                            {upcomingBookings.length}
+                        </span>
 
-                                {/* Bike Image */}
+                    </div>
 
-                                <div className="my-booking-image">
+                    <div className="my-bookings-list">
 
-                                    {bike?.image ? (
-                                        <img
-                                            src={getOptimizedImageUrl(bike.image, 800)}
-                                            alt={
-                                                bike.name ||
-                                                "Bike"
-                                            }
-                                        />
-                                    ) : (
-                                        <div>
-                                            No Image
-                                        </div>
-                                    )}
+                        {upcomingBookings.map(
+                            renderBookingCard
+                        )}
 
-                                </div>
+                    </div>
+
+                </section>
+            )}
 
 
-                                {/* Booking Content */}
+            {/* Completed */}
 
-                                <div className="my-booking-content">
+            {completedBookings.length > 0 && (
+                <section className="my-bookings-section">
 
-                                    <div className="my-booking-header-row">
+                    <div className="my-bookings-section-header">
 
-                                        <div>
+                        <h2>
+                            Completed
+                        </h2>
 
-                                            <p className="my-booking-label">
-                                                BIKE RENTAL
-                                            </p>
+                        <span>
+                            {completedBookings.length}
+                        </span>
 
-                                            <h2>
-                                                {bike?.name ||
-                                                    "Bike"}
-                                            </h2>
+                    </div>
 
-                                            <p className="my-booking-brand">
-                                                {bike?.brand ||
-                                                    "N/A"}{" "}
-                                                {bike?.model ||
-                                                    ""}
-                                            </p>
+                    <div className="my-bookings-list">
 
-                                        </div>
+                        {completedBookings.map(
+                            renderBookingCard
+                        )}
 
-                                        <span
-                                            className={getStatusClass(
-                                                booking.status
-                                            )}
-                                        >
-                                            {booking.status}
-                                        </span>
+                    </div>
 
-                                    </div>
+                </section>
+            )}
 
 
-                                    {/* Booking Information */}
+            {/* Cancelled */}
 
-                                    <div className="my-booking-info">
+            {cancelledBookings.length > 0 && (
+                <section className="my-bookings-section">
 
-                                        <div>
+                    <div className="my-bookings-section-header">
 
-                                            <span>
-                                                Pickup Location
-                                            </span>
+                        <h2>
+                            Cancelled
+                        </h2>
 
-                                            <strong>
-                                                {
-                                                    booking.pickupLocation
-                                                }
-                                            </strong>
+                        <span>
+                            {cancelledBookings.length}
+                        </span>
 
-                                        </div>
+                    </div>
 
+                    <div className="my-bookings-list">
 
-                                        <div>
+                        {cancelledBookings.map(
+                            renderBookingCard
+                        )}
 
-                                            <span>
-                                                Start
-                                            </span>
-
-                                            <strong>
-                                                {formatDate(
-                                                    booking.startDate
-                                                )}
-                                            </strong>
-
-                                        </div>
-
-
-                                        <div>
-
-                                            <span>
-                                                End
-                                            </span>
-
-                                            <strong>
-                                                {formatDate(
-                                                    booking.endDate
-                                                )}
-                                            </strong>
-
-                                        </div>
-
-                                    </div>
-
-
-                                    {/* Footer */}
-
-                                    <div className="my-booking-footer">
-
-                                        <div>
-
-                                            <span>
-                                                Total Amount
-                                            </span>
-
-                                            <strong>
-                                                ₹
-                                                {
-                                                    booking.totalAmount
-                                                }
-                                            </strong>
-
-                                        </div>
-
-
-                                        {[
-                                            "pending",
-                                            "confirmed"
-                                        ].includes(
-                                            booking.status
-                                        ) && (
-                                            <button
-                                                type="button"
-                                                className="my-booking-cancel"
-                                                disabled={
-                                                    cancellingId ===
-                                                    booking._id
-                                                }
-                                                onClick={() =>
-                                                    cancelBooking(
-                                                        booking._id
-                                                    )
-                                                }
-                                            >
-                                                {cancellingId ===
-                                                booking._id
-                                                    ? "Cancelling..."
-                                                    : "Cancel Booking"}
-                                            </button>
-                                        )}
-
-                                    </div>
-
-                                </div>
-
-                            </article>
-                        );
-                    })}
+                    </div>
 
                 </section>
             )}
