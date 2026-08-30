@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
-import { getOptimizedImageUrl } from "../utils/cloudinary"; 
+import { getOptimizedImageUrl } from "../utils/cloudinary";
 
 function AIRecommendation() {
     const navigate = useNavigate();
@@ -11,6 +11,13 @@ function AIRecommendation() {
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+
+    const examplePrompts = [
+        "I want a comfortable bike for a long trip",
+        "I need a cheap bike for daily commuting",
+        "I want an adventure bike under ₹100 per hour",
+        "I need a bike in Chennai for a road trip"
+    ];
 
     const getRecommendations = async () => {
         if (!prompt.trim()) {
@@ -33,7 +40,7 @@ function AIRecommendation() {
             const response = await api.post(
                 "/ai/recommend",
                 {
-                    prompt
+                    prompt: prompt.trim()
                 }
             );
 
@@ -62,123 +69,277 @@ function AIRecommendation() {
         }
     };
 
+    const handlePromptKeyDown = (e) => {
+        if (
+            e.key === "Enter" &&
+            e.ctrlKey
+        ) {
+            getRecommendations();
+        }
+    };
+
+    const handleExampleClick = (example) => {
+        setPrompt(example);
+        setError("");
+    };
+
     return (
         <div className="ai-page">
 
+            {/* =================================================
+                HERO / SEARCH
+            ================================================= */}
+
             <section className="ai-hero">
 
-                <h1>
-                    AI Bike Recommendation
-                </h1>
+                <div className="ai-hero-content">
 
-                <p>
-                    Tell JoyRide what kind of bike you
-                    are looking for.
-                </p>
+                    <span className="ai-badge">
+                        AI Powered
+                    </span>
 
-                <textarea
-                    value={prompt}
-                    onChange={(e) =>
-                        setPrompt(e.target.value)
-                    }
-                    placeholder="Example: I want a cheap bike in Chennai"
-                    rows="5"
-                />
+                    <h1>
+                        Find Your Perfect Bike
+                    </h1>
 
-                <br />
+                    <p>
+                        Tell JoyRide what you need and
+                        our AI will recommend the best
+                        available bikes for your ride.
+                    </p>
 
-                <button
-                    onClick={getRecommendations}
-                    disabled={loading}
-                >
-                    {loading
-                        ? "Finding Bikes..."
-                        : "Get Recommendation"}
-                </button>
+                    <div className="ai-input-container">
+
+                        <textarea
+                            value={prompt}
+                            onChange={(e) =>
+                                setPrompt(e.target.value)
+                            }
+                            onKeyDown={
+                                handlePromptKeyDown
+                            }
+                            placeholder={
+                                "Example: I want a comfortable bike for a long trip in Chennai under ₹100 per hour"
+                            }
+                            rows={5}
+                        />
+
+                        <div className="ai-input-footer">
+
+                            <span>
+                                {prompt.length}/500
+                            </span>
+
+                            <button
+                                onClick={
+                                    getRecommendations
+                                }
+                                disabled={
+                                    loading ||
+                                    !prompt.trim()
+                                }
+                            >
+                                {loading
+                                    ? "Finding Bikes..."
+                                    : "Find My Bike"}
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <div className="ai-examples">
+
+                        <p>
+                            Try an example:
+                        </p>
+
+                        <div className="ai-example-list">
+
+                            {examplePrompts.map(
+                                (example) => (
+                                    <button
+                                        key={example}
+                                        type="button"
+                                        onClick={() =>
+                                            handleExampleClick(
+                                                example
+                                            )
+                                        }
+                                    >
+                                        {example}
+                                    </button>
+                                )
+                            )}
+
+                        </div>
+
+                    </div>
+
+                    <p className="ai-shortcut">
+                        Tip: Press Ctrl + Enter to search
+                    </p>
+
+                </div>
 
             </section>
 
 
-            {/* Error Message */}
+            {/* =================================================
+                ERROR
+            ================================================= */}
 
             {error && (
-                <p className="ai-error">
-                    {error}
-                </p>
-            )}
+                <div className="ai-message ai-error">
+                    <strong>
+                        Something went wrong
+                    </strong>
 
-
-            {/* Loading Message */}
-
-            {loading && (
-                <div className="ai-no-results">
-                    <h2>
-                        Finding the best bikes for you...
-                    </h2>
+                    <p>
+                        {error}
+                    </p>
                 </div>
             )}
 
 
-            {/* No Results */}
+            {/* =================================================
+                LOADING
+            ================================================= */}
+
+            {loading && (
+                <section className="ai-loading">
+
+                    <div className="ai-loading-spinner">
+                        <div></div>
+                    </div>
+
+                    <h2>
+                        Finding your perfect bike...
+                    </h2>
+
+                    <p>
+                        Our AI is analyzing your
+                        requirements and available bikes.
+                    </p>
+
+                </section>
+            )}
+
+
+            {/* =================================================
+                NO RESULTS
+            ================================================= */}
 
             {!loading &&
                 !error &&
                 recommendations.length === 0 &&
                 message && (
-                    <div className="ai-no-results">
+                    <section className="ai-no-results">
+
+                        <div className="ai-no-results-icon">
+                            ?
+                        </div>
 
                         <h2>
-                            No bikes found
+                            No matching bikes found
                         </h2>
 
                         <p>
                             {message}
                         </p>
 
-                        <p>
-                            Try increasing your budget
-                            or changing your location.
-                        </p>
+                        <div className="ai-no-results-tips">
 
-                    </div>
+                            <span>
+                                Try increasing your budget
+                            </span>
+
+                            <span>
+                                Try another location
+                            </span>
+
+                            <span>
+                                Try a different riding style
+                            </span>
+
+                        </div>
+
+                    </section>
                 )}
 
 
-            {/* Recommendations */}
+            {/* =================================================
+                RESULTS
+            ================================================= */}
 
             {!loading &&
                 recommendations.length > 0 && (
                     <section className="ai-results">
 
-                        <h2>
-                            Recommended Bikes
-                        </h2>
+                        <div className="ai-results-header">
+
+                            <div>
+                                <span className="ai-results-label">
+                                    AI RESULTS
+                                </span>
+
+                                <h2>
+                                    Recommended For You
+                                </h2>
+
+                                <p>
+                                    Based on your requirements,
+                                    these bikes are the best matches.
+                                </p>
+                            </div>
+
+                            <div className="ai-results-count">
+                                {recommendations.length}{" "}
+                                {recommendations.length === 1
+                                    ? "Bike"
+                                    : "Bikes"}
+                            </div>
+
+                        </div>
+
 
                         <div className="ai-bike-grid">
 
                             {recommendations.map(
-                                (recommendation) => {
+                                (recommendation, index) => {
 
                                     const bike =
                                         recommendation.bike;
 
                                     return (
-                                        <div
+                                        <article
                                             className="ai-bike-card"
                                             key={bike._id}
                                         >
 
-                                            {/* Bike Image */}
+                                            {/* Ranking */}
+
+                                            <div className="ai-rank">
+                                                #{index + 1}
+                                            </div>
+
+
+                                            {/* Image */}
 
                                             <div className="ai-bike-image">
 
                                                 {bike.image ? (
                                                     <img
-                                                        src={getOptimizedImageUrl(bike.image, 800)}
-                                                        alt={bike.name}
+                                                        src={getOptimizedImageUrl(
+                                                            bike.image,
+                                                            800
+                                                        )}
+                                                        alt={
+                                                            bike.name
+                                                        }
                                                     />
                                                 ) : (
-                                                    <div>
+                                                    <div className="ai-bike-no-image">
                                                         No Image
                                                     </div>
                                                 )}
@@ -186,37 +347,67 @@ function AIRecommendation() {
                                             </div>
 
 
-                                            {/* Bike Information */}
+                                            {/* Content */}
 
                                             <div className="ai-bike-content">
 
-                                                <h3>
-                                                    {bike.name}
-                                                </h3>
+                                                <div className="ai-bike-title-row">
 
-                                                <p>
-                                                    {bike.brand}{" "}
-                                                    {bike.model}
-                                                </p>
+                                                    <div>
 
-                                                <p>
-                                                    Category:{" "}
-                                                    {
-                                                        bike.category
-                                                    }
-                                                </p>
+                                                        <h3>
+                                                            {bike.name}
+                                                        </h3>
 
-                                                <p>
-                                                    Location:{" "}
-                                                    {
-                                                        bike.location
-                                                    }
-                                                </p>
+                                                        <p className="ai-bike-subtitle">
+                                                            {bike.brand}{" "}
+                                                            {bike.model}
+                                                        </p>
+
+                                                    </div>
+
+                                                    <span className="ai-available">
+                                                        Available
+                                                    </span>
+
+                                                </div>
+
+
+                                                {/* Bike details */}
+
+                                                <div className="ai-bike-meta">
+
+                                                    <div>
+                                                        <span>
+                                                            Category
+                                                        </span>
+
+                                                        <strong>
+                                                            {
+                                                                bike.category
+                                                            }
+                                                        </strong>
+                                                    </div>
+
+                                                    <div>
+                                                        <span>
+                                                            Location
+                                                        </span>
+
+                                                        <strong>
+                                                            {
+                                                                bike.location
+                                                            }
+                                                        </strong>
+                                                    </div>
+
+                                                </div>
 
 
                                                 {/* Price */}
 
-                                                <div>
+                                                <div className="ai-bike-price">
+
                                                     <strong>
                                                         ₹
                                                         {
@@ -225,83 +416,82 @@ function AIRecommendation() {
                                                     </strong>
 
                                                     <span>
-                                                        /hour
+                                                        / hour
                                                     </span>
+
                                                 </div>
 
 
-                                                {/* Status */}
+                                                {/* Why recommended */}
 
-                                                <p>
-                                                    Status:{" "}
-                                                    {
-                                                        bike.status
-                                                    }
-                                                </p>
+                                                <div className="ai-reasons">
 
+                                                    <h4>
+                                                        Why this bike?
+                                                    </h4>
 
-                                                {/* Reasons */}
+                                                    <ul>
 
-                                                <h4>
-                                                    Why this bike
-                                                    was recommended
-                                                </h4>
+                                                        {recommendation.reasons?.map(
+                                                            (
+                                                                reason,
+                                                                reasonIndex
+                                                            ) => (
+                                                                <li
+                                                                    key={
+                                                                        reasonIndex
+                                                                    }
+                                                                >
+                                                                    <span>
+                                                                        ✓
+                                                                    </span>
 
-                                                <ul>
+                                                                    {reason}
+                                                                </li>
+                                                            )
+                                                        )}
 
-                                                    {recommendation.reasons.map(
-                                                        (
-                                                            reason,
-                                                            index
-                                                        ) => (
-                                                            <li
-                                                                key={
-                                                                    index
-                                                                }
-                                                            >
-                                                                {
-                                                                    reason
-                                                                }
-                                                            </li>
-                                                        )
-                                                    )}
+                                                    </ul>
 
-                                                </ul>
+                                                </div>
 
 
-                                                {/* View Details */}
+                                                {/* Actions */}
 
                                                 <div className="ai-bike-actions">
 
-    <button
-        className="ai-details-button"
-        onClick={() =>
-            navigate(
-                `/bikes/${bike._id}`
-            )
-        }
-    >
-        View Details
-    </button>
+                                                    <button
+                                                        className="ai-details-button"
+                                                        onClick={() =>
+                                                            navigate(
+                                                                `/bikes/${bike._id}`
+                                                            )
+                                                        }
+                                                    >
+                                                        View Details
+                                                    </button>
 
-    <button
-        className="ai-book-button"
-        onClick={() =>
-            navigate("/booking", {
-                state: {
-                    bike
-                }
-            })
-        }
-    >
-        Book This Bike
-    </button>
+                                                    <button
+                                                        className="ai-book-button"
+                                                        onClick={() =>
+                                                            navigate(
+                                                                "/booking",
+                                                                {
+                                                                    state: {
+                                                                        bike
+                                                                    }
+                                                                }
+                                                            )
+                                                        }
+                                                    >
+                                                        Book This Bike
+                                                    </button>
 
-</div>
+                                                </div>
 
                                             </div>
 
-                                        </div>
+                                        </article>
                                     );
                                 }
                             )}
@@ -315,4 +505,4 @@ function AIRecommendation() {
     );
 }
 
-export default AIRecommendation; 
+export default AIRecommendation;
