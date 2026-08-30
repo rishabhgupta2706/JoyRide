@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
-import { getOptimizedImageUrl } from "../utils/cloudinary";
+import { getOptimizedImageUrl } from "../utils/cloudinary"; 
 
 function AIRecommendation() {
     const navigate = useNavigate();
@@ -174,12 +174,8 @@ function AIRecommendation() {
 
                                                 {bike.image ? (
                                                     <img
-                                                        src={
-                                                            bike.image
-                                                        }
-                                                        alt={
-                                                            bike.name
-                                                        }
+                                                        src={getOptimizedImageUrl(bike.image, 800)}
+                                                        alt={bike.name}
                                                     />
                                                 ) : (
                                                     <div>
