@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 function Navbar() {
@@ -24,44 +24,83 @@ function Navbar() {
                     className="navbar-brand"
                     to={isAdmin ? "/admin" : "/dashboard"}
                 >
-                    JoyRide
+                    <img
+                        src="/logo.png"
+                        alt="JoyRide"
+                    />
                 </Link>
 
                 <div className="navbar-links">
 
                     {!isAdmin && (
                         <>
-                            <Link to="/dashboard">
+                            <NavLink
+                                to="/dashboard"
+                                className={({ isActive }) =>
+                                    isActive ? "active" : ""
+                                }
+                            >
                                 Home
-                            </Link>
+                            </NavLink>
 
-                            <Link to="/bikes">
+                            <NavLink
+                                to="/bikes"
+                                className={({ isActive }) =>
+                                    isActive ? "active" : ""
+                                }
+                            >
                                 Bikes
-                            </Link>
+                            </NavLink>
 
-                            <Link to="/ai-recommendation">
+                            <NavLink
+                                to="/ai-recommendation"
+                                className={({ isActive }) =>
+                                    isActive ? "active" : ""
+                                }
+                            >
                                 AI Recommendations
-                            </Link>
+                            </NavLink>
 
-                            <Link to="/bookings">
+                            <NavLink
+                                to="/bookings"
+                                className={({ isActive }) =>
+                                    isActive ? "active" : ""
+                                }
+                            >
                                 My Bookings
-                            </Link>
+                            </NavLink>
                         </>
                     )}
 
                     {isAdmin && (
                         <>
-                            <Link to="/admin">
+                            <NavLink
+                                to="/admin"
+                                end
+                                className={({ isActive }) =>
+                                    isActive ? "active" : ""
+                                }
+                            >
                                 Dashboard
-                            </Link>
+                            </NavLink>
 
-                            <Link to="/admin/bikes">
+                            <NavLink
+                                to="/admin/bikes"
+                                className={({ isActive }) =>
+                                    isActive ? "active" : ""
+                                }
+                            >
                                 Manage Bikes
-                            </Link>
+                            </NavLink>
 
-                            <Link to="/admin/bookings">
+                            <NavLink
+                                to="/admin/bookings"
+                                className={({ isActive }) =>
+                                    isActive ? "active" : ""
+                                }
+                            >
                                 Manage Bookings
-                            </Link>
+                            </NavLink>
                         </>
                     )}
 

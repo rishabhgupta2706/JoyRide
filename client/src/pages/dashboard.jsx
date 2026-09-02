@@ -2,20 +2,26 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
+import { getOptimizedImageUrl } from "../utils/cloudinary";
 
 function Dashboard() {
     const { user } = useAuth();
     const navigate = useNavigate();
 
     const [bookings, setBookings] = useState([]);
+    const [bikes, setBikes] = useState([]);
+
     const [loadingBookings, setLoadingBookings] = useState(true);
+    const [loadingBikes, setLoadingBikes] = useState(true);
+
     const [bookingError, setBookingError] = useState("");
+    const [bikeError, setBikeError] = useState("");
 
     useEffect(() => {
-        const fetchMyBookings = async () => {
-            try {
-                const token = localStorage.getItem("token");
+        const fetchDashboardData = async () => {
+            const token = localStorage.getItem("token");
 
+            try {
                 const response = await api.get(
                     "/bookings/my",
                     {
@@ -28,7 +34,6 @@ function Dashboard() {
                 setBookings(
                     response.data.bookings || []
                 );
-
             } catch (error) {
                 console.error(
                     "DASHBOARD BOOKINGS ERROR:",
@@ -39,13 +44,53 @@ function Dashboard() {
                     error.response?.data?.message ||
                     "Failed to load your bookings."
                 );
-
             } finally {
                 setLoadingBookings(false);
             }
         };
 
-        fetchMyBookings();
+        fetchDashboardData();
+    }, []);
+
+    useEffect(() => {
+        const fetchBikes = async () => {
+            const token = localStorage.getItem("token");
+
+            try {
+                const response = await api.get(
+                    "/bikes",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
+
+                const availableBikes =
+                    (response.data.bikes || [])
+                        .filter(
+                            (bike) =>
+                                bike.status === "available"
+                        )
+                        .slice(0, 6);
+
+                setBikes(availableBikes);
+            } catch (error) {
+                console.error(
+                    "DASHBOARD BIKES ERROR:",
+                    error
+                );
+
+                setBikeError(
+                    error.response?.data?.message ||
+                    "Failed to load bikes."
+                );
+            } finally {
+                setLoadingBikes(false);
+            }
+        };
+
+        fetchBikes();
     }, []);
 
     const activeBookings = bookings.filter(
@@ -69,47 +114,55 @@ function Dashboard() {
     return (
         <div className="dashboard-page">
 
-            {/* Hero Section */}
+            {/* =================================================
+                HERO
+            ================================================= */}
 
-            <section className="dashboard-hero">
+            <section className="dashboard-marketplace-hero">
 
-                <div className="dashboard-hero-content">
+                <div className="dashboard-hero-overlay">
 
-                    <p className="dashboard-label">
-                        WELCOME TO JOYRIDE
-                    </p>
+                    <div className="dashboard-hero-content">
 
-                    <h1>
-                        Welcome back,{" "}
-                        <span>
-                            {user?.name || "Rider"}
-                        </span>
-                    </h1>
+                        <p className="dashboard-label">
+                            JOYRIDE BIKE RENTALS
+                        </p>
 
-                    <p className="dashboard-subtitle">
-                        Find the perfect bike, book your ride,
-                        and start your journey.
-                    </p>
+                        <h1>
+                            Your next ride
+                            <br />
+                            starts here.
+                        </h1>
 
-                    <div className="dashboard-actions">
+                        <p className="dashboard-subtitle">
+                            Rent the right bike for your
+                            commute, weekend escape,
+                            or long-distance adventure.
+                        </p>
 
-                        <button
-                            className="dashboard-primary-button"
-                            onClick={() =>
-                                navigate("/bikes")
-                            }
-                        >
-                            Browse Bikes
-                        </button>
+                        <div className="dashboard-actions">
 
-                        <button
-                            className="dashboard-secondary-button"
-                            onClick={() =>
-                                navigate("/ai-recommendation")
-                            }
-                        >
-                            Get AI Recommendation
-                        </button>
+                            <button
+                                className="dashboard-primary-button"
+                                onClick={() =>
+                                    navigate("/bikes")
+                                }
+                            >
+                                Explore Bikes
+                            </button>
+
+                            <button
+                                className="dashboard-secondary-button"
+                                onClick={() =>
+                                    navigate(
+                                        "/ai-recommendation"
+                                    )
+                                }
+                            >
+                                Find With AI
+                            </button>
+
+                        </div>
 
                     </div>
 
@@ -118,104 +171,246 @@ function Dashboard() {
             </section>
 
 
-            {/* Quick Actions */}
+            {/* =================================================
+                QUICK SEARCH
+            ================================================= */}
+
+            <section className="dashboard-search-section">
+
+                <div className="dashboard-search-box">
+
+                    <div className="dashboard-search-content">
+
+                        <span>
+                            Find your ride
+                        </span>
+
+                        <h2>
+                            Where do you want to ride?
+                        </h2>
+
+                    </div>
+
+                    <button
+                        onClick={() =>
+                            navigate("/bikes")
+                        }
+                    >
+                        Browse Bikes
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            {/* =================================================
+                POPULAR BIKES
+            ================================================= */}
 
             <section className="dashboard-section">
 
                 <div className="dashboard-section-header">
 
-                    <h2>
-                        Quick Actions
-                    </h2>
+                    <div>
+                        <p className="dashboard-section-label">
+                            OUR FLEET
+                        </p>
 
-                    <p>
-                        Everything you need for your next ride.
-                    </p>
+                        <h2>
+                            Popular Bikes
+                        </h2>
 
-                </div>
+                        <p>
+                            Choose from bikes ready for
+                            your next ride.
+                        </p>
+                    </div>
 
-
-                <div className="dashboard-card-grid">
-
-                    <div
-                        className="dashboard-card"
+                    <button
+                        className="dashboard-section-link"
                         onClick={() =>
                             navigate("/bikes")
                         }
                     >
+                        View All Bikes →
+                    </button>
 
-                        <div className="dashboard-card-icon">
-                            B
-                        </div>
+                </div>
 
-                        <h3>
-                            Browse Bikes
-                        </h3>
 
-                        <p>
-                            Explore available bikes and
-                            find one that fits your needs.
-                        </p>
-
-                        <span>
-                            Explore Bikes →
-                        </span>
-
+                {loadingBikes && (
+                    <div className="dashboard-message">
+                        Loading bikes...
                     </div>
+                )}
 
 
-                    <div
-                        className="dashboard-card"
+                {!loadingBikes &&
+                    bikeError && (
+                        <div className="dashboard-message dashboard-error">
+                            {bikeError}
+                        </div>
+                    )}
+
+
+                {!loadingBikes &&
+                    !bikeError &&
+                    bikes.length > 0 && (
+
+                        <div className="dashboard-bike-grid">
+
+                            {bikes.map((bike) => (
+
+                                <article
+                                    className="dashboard-bike-card"
+                                    key={bike._id}
+                                >
+
+                                    <div className="dashboard-bike-image">
+
+                                        {bike.image ? (
+                                            <img
+                                                src={getOptimizedImageUrl(
+                                                    bike.image,
+                                                    800
+                                                )}
+                                                alt={bike.name}
+                                            />
+                                        ) : (
+                                            <div>
+                                                No Image
+                                            </div>
+                                        )}
+
+                                    </div>
+
+
+                                    <div className="dashboard-bike-content">
+
+                                        <p className="dashboard-bike-category">
+                                            {bike.category}
+                                        </p>
+
+                                        <h3>
+                                            {bike.name}
+                                        </h3>
+
+                                        <p className="dashboard-bike-model">
+                                            {bike.brand}{" "}
+                                            {bike.model}
+                                        </p>
+
+
+                                        <div className="dashboard-bike-bottom">
+
+                                            <div>
+                                                <strong>
+                                                    ₹
+                                                    {
+                                                        bike.pricePerHour
+                                                    }
+                                                </strong>
+
+                                                <span>
+                                                    / hour
+                                                </span>
+                                            </div>
+
+                                            <button
+                                                onClick={() =>
+                                                    navigate(
+                                                        `/bikes/${bike._id}`
+                                                    )
+                                                }
+                                            >
+                                                View
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+
+                                </article>
+
+                            ))}
+
+                        </div>
+                    )}
+
+
+                {!loadingBikes &&
+                    !bikeError &&
+                    bikes.length === 0 && (
+                        <div className="dashboard-empty">
+                            <h3>
+                                No bikes available
+                            </h3>
+
+                            <p>
+                                Check back soon for
+                                available rides.
+                            </p>
+                        </div>
+                    )}
+
+            </section>
+
+
+            {/* =================================================
+                AI FINDER
+            ================================================= */}
+
+            <section className="dashboard-ai-section">
+
+                <div className="dashboard-ai-content">
+
+                    <p className="dashboard-section-label">
+                        JOYRIDE AI
+                    </p>
+
+                    <h2>
+                        Not sure which bike
+                        <br />
+                        is right for you?
+                    </h2>
+
+                    <p>
+                        Tell us where you're going,
+                        your budget, and how you want
+                        to ride. Our AI will find the
+                        best available bikes for you.
+                    </p>
+
+                    <button
                         onClick={() =>
                             navigate(
                                 "/ai-recommendation"
                             )
                         }
                     >
+                        Find My Perfect Bike →
+                    </button>
 
-                        <div className="dashboard-card-icon">
-                            AI
-                        </div>
+                </div>
 
-                        <h3>
-                            AI Recommendation
-                        </h3>
+                <div className="dashboard-ai-visual">
 
-                        <p>
-                            Tell JoyRide what you need and
-                            let AI find the right bike for you.
-                        </p>
+                    <div className="dashboard-ai-card">
 
                         <span>
-                            Find My Bike →
+                            AI BIKE FINDER
                         </span>
-
-                    </div>
-
-
-                    <div
-                        className="dashboard-card"
-                        onClick={() =>
-                            navigate("/bookings")
-                        }
-                    >
-
-                        <div className="dashboard-card-icon">
-                            R
-                        </div>
-
-                        <h3>
-                            My Bookings
-                        </h3>
 
                         <p>
-                            View your current and previous
-                            bike rental bookings.
+                            "Comfortable bike for
+                            a long trip under
+                            ₹100/hour"
                         </p>
 
-                        <span>
-                            View Bookings →
-                        </span>
+                        <strong>
+                            3 bikes found
+                        </strong>
 
                     </div>
 
@@ -224,19 +419,37 @@ function Dashboard() {
             </section>
 
 
-            {/* Rental Activity */}
+            {/* =================================================
+                RENTAL ACTIVITY
+            ================================================= */}
 
             <section className="dashboard-section dashboard-activity">
 
                 <div className="dashboard-section-header">
 
-                    <h2>
-                        Your Rental Activity
-                    </h2>
+                    <div>
+                        <p className="dashboard-section-label">
+                            YOUR JOYRIDE
+                        </p>
 
-                    <p>
-                        A quick overview of your JoyRide bookings.
-                    </p>
+                        <h2>
+                            Rental Activity
+                        </h2>
+
+                        <p>
+                            Keep track of your rides
+                            and bookings.
+                        </p>
+                    </div>
+
+                    <button
+                        className="dashboard-section-link"
+                        onClick={() =>
+                            navigate("/bookings")
+                        }
+                    >
+                        View All Bookings →
+                    </button>
 
                 </div>
 
@@ -248,20 +461,21 @@ function Dashboard() {
                 )}
 
 
-                {!loadingBookings && bookingError && (
-                    <div className="dashboard-message dashboard-error">
-                        {bookingError}
-                    </div>
-                )}
+                {!loadingBookings &&
+                    bookingError && (
+                        <div className="dashboard-message dashboard-error">
+                            {bookingError}
+                        </div>
+                    )}
 
 
                 {!loadingBookings &&
                     !bookingError && (
                         <>
+
                             <div className="dashboard-stats">
 
                                 <div className="dashboard-stat-card">
-
                                     <span>
                                         Total Bookings
                                     </span>
@@ -269,12 +483,9 @@ function Dashboard() {
                                     <strong>
                                         {bookings.length}
                                     </strong>
-
                                 </div>
 
-
                                 <div className="dashboard-stat-card">
-
                                     <span>
                                         Active
                                     </span>
@@ -282,12 +493,9 @@ function Dashboard() {
                                     <strong>
                                         {activeBookings.length}
                                     </strong>
-
                                 </div>
 
-
                                 <div className="dashboard-stat-card">
-
                                     <span>
                                         Completed
                                     </span>
@@ -295,12 +503,9 @@ function Dashboard() {
                                     <strong>
                                         {completedBookings.length}
                                     </strong>
-
                                 </div>
 
-
                                 <div className="dashboard-stat-card">
-
                                     <span>
                                         Cancelled
                                     </span>
@@ -308,13 +513,13 @@ function Dashboard() {
                                     <strong>
                                         {cancelledBookings.length}
                                     </strong>
-
                                 </div>
 
                             </div>
 
 
                             {latestBooking && (
+
                                 <div className="dashboard-latest-booking">
 
                                     <div>
@@ -329,11 +534,14 @@ function Dashboard() {
                                         </h3>
 
                                         <p>
-                                            {latestBooking.bike?.brand ||
-                                                ""}
-                                            {" "}
-                                            {latestBooking.bike?.model ||
-                                                ""}
+                                            {
+                                                latestBooking.bike?.brand ||
+                                                ""
+                                            }{" "}
+                                            {
+                                                latestBooking.bike?.model ||
+                                                ""
+                                            }
                                         </p>
 
                                     </div>
@@ -348,7 +556,9 @@ function Dashboard() {
                                         <strong
                                             className={`booking-status ${latestBooking.status}`}
                                         >
-                                            {latestBooking.status}
+                                            {
+                                                latestBooking.status
+                                            }
                                         </strong>
 
                                     </div>
@@ -361,7 +571,9 @@ function Dashboard() {
                                         </span>
 
                                         <strong>
-                                            {latestBooking.pickupLocation}
+                                            {
+                                                latestBooking.pickupLocation
+                                            }
                                         </strong>
 
                                     </div>
@@ -374,7 +586,10 @@ function Dashboard() {
                                         </span>
 
                                         <strong>
-                                            ₹{latestBooking.totalAmount}
+                                            ₹
+                                            {
+                                                latestBooking.totalAmount
+                                            }
                                         </strong>
 
                                     </div>
@@ -383,37 +598,50 @@ function Dashboard() {
                                     <button
                                         className="dashboard-view-bookings"
                                         onClick={() =>
-                                            navigate("/bookings")
+                                            navigate(
+                                                "/bookings"
+                                            )
                                         }
                                     >
-                                        View My Bookings
+                                        View Booking
                                     </button>
 
                                 </div>
+
                             )}
 
 
                             {!latestBooking && (
+
                                 <div className="dashboard-empty">
 
+                                    <p className="dashboard-section-label">
+                                        READY TO RIDE?
+                                    </p>
+
                                     <h3>
-                                        No bookings yet
+                                        Your next adventure
+                                        starts with a bike.
                                     </h3>
 
                                     <p>
-                                        Your next ride is waiting for you.
+                                        Browse our fleet and
+                                        book your first ride.
                                     </p>
 
                                     <button
                                         className="dashboard-primary-button"
                                         onClick={() =>
-                                            navigate("/bikes")
+                                            navigate(
+                                                "/bikes"
+                                            )
                                         }
                                     >
                                         Find a Bike
                                     </button>
 
                                 </div>
+
                             )}
 
                         </>
@@ -422,19 +650,24 @@ function Dashboard() {
             </section>
 
 
-            {/* How JoyRide Works */}
+            {/* =================================================
+                WHY JOYRIDE
+            ================================================= */}
 
             <section className="dashboard-section dashboard-how">
 
                 <div className="dashboard-section-header">
 
-                    <h2>
-                        How JoyRide Works
-                    </h2>
+                    <div>
+                        <p className="dashboard-section-label">
+                            WHY JOYRIDE
+                        </p>
 
-                    <p>
-                        Getting your next ride is simple.
-                    </p>
+                        <h2>
+                            Everything you need
+                            to ride freely.
+                        </h2>
+                    </div>
 
                 </div>
 
@@ -448,12 +681,12 @@ function Dashboard() {
                         </div>
 
                         <h3>
-                            Find Your Bike
+                            Choose Your Bike
                         </h3>
 
                         <p>
-                            Browse our available bikes or
-                            use AI to find the right one.
+                            Explore a range of bikes
+                            suited for every type of ride.
                         </p>
 
                     </div>
@@ -466,12 +699,12 @@ function Dashboard() {
                         </div>
 
                         <h3>
-                            Choose Your Time
+                            Book in Minutes
                         </h3>
 
                         <p>
-                            Select your pickup and return
-                            time and check availability.
+                            Pick your time, location,
+                            and confirm your booking.
                         </p>
 
                     </div>
@@ -484,12 +717,12 @@ function Dashboard() {
                         </div>
 
                         <h3>
-                            Book & Ride
+                            Ride Your Way
                         </h3>
 
                         <p>
-                            Confirm your booking and enjoy
-                            your ride with JoyRide.
+                            Pick up your bike and
+                            enjoy the journey.
                         </p>
 
                     </div>
