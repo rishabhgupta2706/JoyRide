@@ -215,196 +215,316 @@ function Booking() {
     };
 
     return (
-        <div>
+    <div className="booking-page">
 
-            {/* Back button */}
+        <div className="booking-container">
+
+            {/* BACK BUTTON */}
 
             <button
                 type="button"
+                className="booking-back"
                 onClick={() =>
                     navigate(`/bikes/${bike._id}`)
                 }
             >
-                Back to Bike
+                ← Back to Bike
             </button>
 
 
-            {/* Bike information */}
+            {/* MAIN BOOKING CARD */}
 
-            <div>
+            <section className="booking-card">
 
-                {bike.image && (
-                    <img
-                        src={getOptimizedImageUrl(
-                            bike.image,
-                            800
+                {/* LEFT SIDE - BIKE */}
+
+                <div className="booking-bike-section">
+
+                    <div className="booking-bike-image">
+
+                        {bike.image ? (
+                            <img
+                                src={getOptimizedImageUrl(
+                                    bike.image,
+                                    800
+                                )}
+                                alt={bike.name}
+                            />
+                        ) : (
+                            <div className="booking-image-placeholder">
+                                No Image Available
+                            </div>
                         )}
-                        alt={bike.name}
-                    />
-                )}
 
-                <h1>
-                    Book {bike.name}
-                </h1>
+                    </div>
 
-                <p>
-                    {bike.brand} {bike.model}
-                </p>
+                    <div className="booking-bike-content">
 
-                <p>
-                    ₹{bike.pricePerHour}/hour
-                </p>
-
-            </div>
-
-
-            {/* Booking form */}
-
-            <form onSubmit={handleBooking}>
-
-                {/* Start date */}
-
-                <div>
-
-                    <label>
-                        Start Date and Time
-                    </label>
-
-                    <input
-                        type="datetime-local"
-                        value={startDate}
-                        min={getMinDateTime()}
-                        onChange={(e) =>
-                            handleStartDateChange(
-                                e.target.value
-                            )
-                        }
-                        required
-                    />
-
-                </div>
-
-
-                {/* End date */}
-
-                <div>
-
-                    <label>
-                        End Date and Time
-                    </label>
-
-                    <input
-                        type="datetime-local"
-                        value={endDate}
-                        min={
-                            startDate ||
-                            getMinDateTime()
-                        }
-                        onChange={(e) => {
-                            setEndDate(e.target.value);
-                            setAvailability(null);
-                            setError("");
-                        }}
-                        required
-                    />
-
-                </div>
-
-
-                {/* Availability status */}
-
-                {checkingAvailability && (
-                    <p>
-                        Checking bike availability...
-                    </p>
-                )}
-
-                {availability?.available && (
-                    <p>
-                        {availability.message}
-                    </p>
-                )}
-
-                {availability &&
-                    !availability.available && (
-                        <p>
-                            {availability.message}
+                        <p className="booking-label">
+                            JOYRIDE BIKE
                         </p>
-                    )}
 
+                        <h1>
+                            {bike.name}
+                        </h1>
 
-                {/* Pickup location */}
+                        <p className="booking-bike-brand">
+                            {bike.brand} {bike.model}
+                        </p>
 
-                <div>
+                        <div className="booking-bike-price">
 
-                    <label>
-                        Pickup Location
-                    </label>
+                            <strong>
+                                ₹{bike.pricePerHour}
+                            </strong>
 
-                    <input
-                        type="text"
-                        value={pickupLocation}
-                        onChange={(e) =>
-                            setPickupLocation(
-                                e.target.value
-                            )
-                        }
-                        placeholder="Enter pickup location"
-                        required
-                    />
+                            <span>
+                                /hour
+                            </span>
 
-                </div>
+                        </div>
 
-
-                {/* Price calculation */}
-
-                <div>
-
-                    <p>
-                        Rental Hours: {hours}
-                    </p>
-
-                    <p>
-                        Price Per Hour: ₹
-                        {bike.pricePerHour}
-                    </p>
-
-                    <p>
-                        Estimated Amount: ₹
-                        {estimatedAmount}
-                    </p>
+                    </div>
 
                 </div>
 
 
-                {/* Error */}
+                {/* RIGHT SIDE - FORM */}
 
-                {error && (
-                    <p>
-                        {error}
-                    </p>
-                )}
+                <div className="booking-form-section">
+
+                    <div className="booking-form-header">
+
+                        <p className="booking-label">
+                            RESERVE YOUR RIDE
+                        </p>
+
+                        <h2>
+                            Book Your Bike
+                        </h2>
+
+                        <p>
+                            Select your rental time and pickup location.
+                        </p>
+
+                    </div>
 
 
-                {/* Submit */}
+                    <form onSubmit={handleBooking}>
 
-                <button
-                    type="submit"
-                    disabled={
-                        loading ||
-                        checkingAvailability ||
-                        !availability?.available
-                    }
-                >
-                    {loading
-                        ? "Creating Booking..."
-                        : "Confirm Booking"}
-                </button>
+                        {/* START DATE */}
 
-            </form>
+                        <div className="booking-field">
+
+    <label>
+        Start Date and Time
+    </label>
+
+    <div className="booking-datetime-wrapper">
+
+        <input
+            type="datetime-local"
+            value={startDate}
+            min={getMinDateTime()}
+            onChange={(e) =>
+                handleStartDateChange(
+                    e.target.value
+                )
+            }
+            onClick={(e) => {
+                if (e.currentTarget.showPicker) {
+                    e.currentTarget.showPicker();
+                }
+            }}
+            required
+        />
+
+        <span className="booking-datetime-icon">
+            <svg
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+            >
+                <path
+                    d="M7 2v2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7Zm12 17H5V10h14v9ZM7 12h3v3H7v-3Z"
+                />
+            </svg>
+        </span>
+
+    </div>
+
+</div>
+
+
+                        {/* END DATE */}
+<div className="booking-field">
+
+    <label>
+        End Date and Time
+    </label>
+
+    <div className="booking-datetime-wrapper">
+
+        <input
+            type="datetime-local"
+            value={endDate}
+            min={
+                startDate ||
+                getMinDateTime()
+            }
+            onChange={(e) => {
+                setEndDate(e.target.value);
+                setAvailability(null);
+                setError("");
+            }}
+            onClick={(e) => {
+                if (e.currentTarget.showPicker) {
+                    e.currentTarget.showPicker();
+                }
+            }}
+            required
+        />
+
+        <span className="booking-datetime-icon">
+            <svg
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+            >
+                <path
+                    d="M7 2v2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7Zm12 17H5V10h14v9ZM7 12h3v3H7v-3Z"
+                />
+            </svg>
+        </span>
+
+    </div>
+
+</div>
+
+
+                        {/* AVAILABILITY */}
+
+                        {checkingAvailability && (
+                            <div className="booking-status checking">
+                                Checking bike availability...
+                            </div>
+                        )}
+
+                        {availability?.available && (
+                            <div className="booking-status success">
+                                {availability.message}
+                            </div>
+                        )}
+
+                        {availability &&
+                            !availability.available && (
+                                <div className="booking-status unavailable">
+                                    {availability.message}
+                                </div>
+                            )}
+
+
+                        {/* PICKUP LOCATION */}
+
+                        <div className="booking-field">
+
+                            <label>
+                                Pickup Location
+                            </label>
+
+                            <input
+                                type="text"
+                                value={pickupLocation}
+                                onChange={(e) =>
+                                    setPickupLocation(
+                                        e.target.value
+                                    )
+                                }
+                                placeholder="Enter pickup location"
+                                required
+                            />
+
+                        </div>
+
+
+                        {/* PRICE SUMMARY */}
+
+                        <div className="booking-summary">
+
+                            <div className="booking-summary-row">
+
+                                <span>
+                                    Rental Hours
+                                </span>
+
+                                <strong>
+                                    {hours}
+                                </strong>
+
+                            </div>
+
+                            <div className="booking-summary-row">
+
+                                <span>
+                                    Price Per Hour
+                                </span>
+
+                                <strong>
+                                    ₹{bike.pricePerHour}
+                                </strong>
+
+                            </div>
+
+                            <div className="booking-summary-divider" />
+
+                            <div className="booking-summary-total">
+
+                                <span>
+                                    Estimated Amount
+                                </span>
+
+                                <strong>
+                                    ₹{estimatedAmount}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        {/* ERROR */}
+
+                        {error && (
+                            <div className="booking-error">
+                                {error}
+                            </div>
+                        )}
+
+
+                        {/* SUBMIT */}
+
+                        <button
+                            type="submit"
+                            className="booking-submit"
+                            disabled={
+                                loading ||
+                                checkingAvailability ||
+                                !availability?.available
+                            }
+                        >
+                            {loading
+                                ? "Creating Booking..."
+                                : "Confirm Booking"}
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </section>
 
         </div>
-    );
+
+    </div>
+);
 }
 
 export default Booking;

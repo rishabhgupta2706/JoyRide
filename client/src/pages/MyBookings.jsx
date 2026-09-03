@@ -81,186 +81,241 @@ function MyBookings() {
     };
 
     // Separate bookings by status
-    const upcomingBookings = bookings.filter(
-        (booking) =>
+    // Separate bookings by status and date
+
+const now = new Date();
+
+const upcomingBookings = bookings.filter(
+    (booking) =>
+        (
             booking.status === "pending" ||
             booking.status === "confirmed"
-    );
+        ) &&
+        new Date(booking.endDate) >= now
+);
 
-    const completedBookings = bookings.filter(
-        (booking) =>
-            booking.status === "completed"
-    );
+const completedBookings = bookings.filter(
+    (booking) =>
+        booking.status === "completed"
+);
 
-    const cancelledBookings = bookings.filter(
-        (booking) =>
-            booking.status === "cancelled"
-    );
+const cancelledBookings = bookings.filter(
+    (booking) =>
+        booking.status === "cancelled"
+);
+
+const pastBookings = bookings.filter(
+    (booking) =>
+        (
+            booking.status === "pending" ||
+            booking.status === "confirmed"
+        ) &&
+        new Date(booking.endDate) < now
+);
 
     const renderBookingCard = (booking) => {
         const bike = booking.bike;
 
         return (
-            <article
-                className="my-booking-card"
-                key={booking._id}
-            >
+    <article
+        className="my-booking-card"
+        key={booking._id}
+    >
 
-                {/* Bike Image */}
+        {/* BIKE IMAGE */}
 
-                <div className="my-booking-image">
+        <div className="my-booking-image">
 
-                    {bike?.image ? (
-                        <img
-                            src={getOptimizedImageUrl(
-                                bike.image,
-                                800
-                            )}
-                            alt={
-                                bike.name ||
-                                "Bike"
-                            }
-                        />
-                    ) : (
-                        <div>
-                            No Image
-                        </div>
+            {bike?.image ? (
+                <img
+                    src={getOptimizedImageUrl(
+                        bike.image,
+                        800
                     )}
+                    alt={
+                        bike.name ||
+                        "Bike"
+                    }
+                />
+            ) : (
+                <div className="my-booking-image-placeholder">
+                    No Image
+                </div>
+            )}
+
+        </div>
+
+
+        {/* BOOKING CONTENT */}
+
+        <div className="my-booking-content">
+
+            {/* HEADER */}
+
+            <div className="my-booking-header-row">
+
+                <div>
+
+                    <p className="my-booking-label">
+                        BIKE RENTAL
+                    </p>
+
+                    <h2>
+                        {bike?.name || "Bike"}
+                    </h2>
+
+                    <p className="my-booking-brand">
+                        {bike?.brand || "N/A"}{" "}
+                        {bike?.model || ""}
+                    </p>
 
                 </div>
 
+                <span
+                    className={`my-booking-status ${booking.status}`}
+                >
+                    {booking.status}
+                </span>
 
-                {/* Booking Content */}
+            </div>
 
-                <div className="my-booking-content">
 
-                    {/* Header */}
+            {/* BOOKING INFORMATION */}
 
-                    <div className="my-booking-header-row">
+            <div className="my-booking-info">
 
-                        <div>
+                <div className="my-booking-info-item">
 
-                            <p className="my-booking-label">
-                                BIKE RENTAL
-                            </p>
-
-                            <h2>
-                                {bike?.name || "Bike"}
-                            </h2>
-
-                            <p className="my-booking-brand">
-                                {bike?.brand || "N/A"}{" "}
-                                {bike?.model || ""}
-                            </p>
-
-                        </div>
-
-                        <span
-                            className={`my-booking-status ${booking.status}`}
+                    <div className="my-booking-info-icon">
+                        <svg
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
                         >
-                            {booking.status}
-                        </span>
-
+                            <path
+                                d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
+                            />
+                        </svg>
                     </div>
 
+                    <span>
+                        Pickup Location
+                    </span>
 
-                    {/* Booking Information */}
-
-                    <div className="my-booking-info">
-
-                        <div>
-                            <span>
-                                Pickup Location
-                            </span>
-
-                            <strong>
-                                {booking.pickupLocation}
-                            </strong>
-                        </div>
-
-
-                        <div>
-                            <span>
-                                Start
-                            </span>
-
-                            <strong>
-                                {formatDate(
-                                    booking.startDate
-                                )}
-                            </strong>
-                        </div>
-
-
-                        <div>
-                            <span>
-                                End
-                            </span>
-
-                            <strong>
-                                {formatDate(
-                                    booking.endDate
-                                )}
-                            </strong>
-                        </div>
-
-                    </div>
-
-
-                    {/* Footer */}
-
-                    <div className="my-booking-footer">
-
-                        <div>
-
-                            <span>
-                                Total Amount
-                            </span>
-
-                            <strong>
-                                ₹
-                                {formatAmount(
-                                    booking.totalAmount
-                                )}
-                            </strong>
-
-                        </div>
-
-
-                        {/* Cancel Button */}
-
-                        {[
-                            "pending",
-                            "confirmed"
-                        ].includes(
-                            booking.status
-                        ) && (
-                            <button
-                                type="button"
-                                className="my-booking-cancel"
-                                disabled={
-                                    cancellingId ===
-                                    booking._id
-                                }
-                                onClick={() =>
-                                    cancelBooking(
-                                        booking._id
-                                    )
-                                }
-                            >
-                                {cancellingId ===
-                                booking._id
-                                    ? "Cancelling..."
-                                    : "Cancel Booking"}
-                            </button>
-                        )}
-
-                    </div>
+                    <strong>
+                        {booking.pickupLocation}
+                    </strong>
 
                 </div>
 
-            </article>
-        );
+
+                <div className="my-booking-info-item">
+
+                    <div className="my-booking-info-icon">
+                        <svg
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                        >
+                            <path
+                                d="M7 2v2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7Zm12 17H5V10h14v9ZM7 12h3v3H7v-3Z"
+                            />
+                        </svg>
+                    </div>
+
+                    <span>
+                        Start
+                    </span>
+
+                    <strong>
+                        {formatDate(
+                            booking.startDate
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div className="my-booking-info-item">
+
+                    <div className="my-booking-info-icon">
+                        <svg
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                        >
+                            <path
+                                d="M7 2v2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7Zm12 17H5V10h14v9ZM7 12h3v3H7v-3Z"
+                            />
+                        </svg>
+                    </div>
+
+                    <span>
+                        End
+                    </span>
+
+                    <strong>
+                        {formatDate(
+                            booking.endDate
+                        )}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            {/* FOOTER */}
+
+            <div className="my-booking-footer">
+
+                <div className="my-booking-total">
+
+                    <span>
+                        Total Amount
+                    </span>
+
+                    <strong>
+                        ₹
+                        {formatAmount(
+                            booking.totalAmount
+                        )}
+                    </strong>
+
+                </div>
+
+
+                {/* CANCEL BUTTON */}
+
+                {[
+                    "pending",
+                    "confirmed"
+                ].includes(
+                    booking.status
+                ) && new Date(booking.endDate) >= now &&(
+                    <button
+                        type="button"
+                        className="my-booking-cancel"
+                        disabled={
+                            cancellingId ===
+                            booking._id
+                        }
+                        onClick={() =>
+                            cancelBooking(
+                                booking._id
+                            )
+                        }
+                    >
+                        {cancellingId ===
+                        booking._id
+                            ? "Cancelling..."
+                            : "Cancel Booking"}
+                    </button>
+                )}
+
+            </div>
+
+        </div>
+
+    </article>
+);
     };
 
     if (loading) {
@@ -418,6 +473,34 @@ function MyBookings() {
 
                 </section>
             )}
+
+            {/* Past */}
+
+{pastBookings.length > 0 && (
+    <section className="my-bookings-section">
+
+        <div className="my-bookings-section-header">
+
+            <h2>
+                Past Bookings
+            </h2>
+
+            <span>
+                {pastBookings.length}
+            </span>
+
+        </div>
+
+        <div className="my-bookings-list">
+
+            {pastBookings.map(
+                renderBookingCard
+            )}
+
+        </div>
+
+    </section>
+)}
 
 
             {/* Cancelled */}

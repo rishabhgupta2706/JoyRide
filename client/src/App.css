@@ -8169,3 +8169,1789 @@ body {
 .bike-info p:first-child {
     text-transform: capitalize;
 }
+/* =========================================================
+   BIKE DETAILS PAGE
+========================================================= */
+
+.bike-details-page {
+    min-height: calc(100vh - 90px);
+    background: #f4f7fb;
+    padding: 45px 0 70px;
+    box-sizing: border-box;
+}
+
+.bike-details-container {
+    width: min(1200px, calc(100% - 120px));
+    margin: 0 auto;
+}
+
+/* Back button */
+
+.bike-details-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 22px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #64748b;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.bike-details-back:hover {
+    color: #7c3aed;
+}
+
+/* =========================================================
+   MAIN CARD
+========================================================= */
+
+.bike-details-card {
+    display: grid;
+    grid-template-columns: 48% 52%;
+    min-height: 540px;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #dfe5ee;
+    border-radius: 22px;
+    box-shadow: 0 18px 45px rgba(30, 41, 59, 0.08);
+}
+
+/* =========================================================
+   IMAGE SECTION
+========================================================= */
+
+.bike-details-image {
+    min-height: 540px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    background: #eef3f8;
+    box-sizing: border-box;
+}
+
+.bike-details-image img {
+    display: block;
+    width: 100%;
+    max-width: 480px;
+    max-height: 420px;
+    height: auto;
+    object-fit: contain;
+}
+
+.bike-details-image-placeholder {
+    color: #94a3b8;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.bike-details-content {
+    display: flex;
+    flex-direction: column;
+    padding: 45px 50px 35px;
+    box-sizing: border-box;
+}
+
+/* =========================================================
+   TOP SECTION
+========================================================= */
+
+.bike-details-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 25px;
+}
+
+.bike-details-label {
+    margin: 0 0 10px;
+    color: #7c3aed;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.bike-details-top h1 {
+    margin: 0;
+    color: #111827;
+    font-size: 44px;
+    line-height: 1.05;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+}
+
+.bike-details-brand {
+    margin: 10px 0 0;
+    color: #64748b;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.bike-details-status {
+    flex-shrink: 0;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: #fee2e2;
+    color: #dc2626;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.bike-details-status.available {
+    background: #e8f8ee;
+    color: #159447;
+}
+
+/* =========================================================
+   INFORMATION
+========================================================= */
+
+.bike-details-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    margin-top: 38px;
+
+    border-top: 1px solid #dce5f0;
+    border-bottom: 1px solid #dce5f0;
+}
+
+.bike-details-info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    min-height: 115px;
+
+    padding: 22px 20px;
+
+    box-sizing: border-box;
+
+    text-align: center;
+}
+
+.bike-details-info-item:nth-child(even) {
+    border-left: 1px solid #dce5f0;
+}
+
+.bike-details-info-item:nth-child(n + 3) {
+    border-top: 1px solid #dce5f0;
+}
+
+
+/* ICON */
+
+.bike-details-info-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 34px;
+    height: 34px;
+
+    margin-bottom: 2px;
+
+    border-radius: 9px;
+
+    background: #f1eaff;
+
+    color: #7c3aed;
+}
+
+.bike-details-info-icon svg {
+    width: 18px;
+    height: 18px;
+
+    fill: currentColor;
+}
+
+
+/* LABEL */
+
+.bike-details-info-item span {
+    color: #8a9bb0;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    letter-spacing: 0.8px;
+
+    text-transform: uppercase;
+}
+
+
+/* VALUE */
+
+.bike-details-info-item strong {
+    color: #111827;
+
+    font-size: 17px;
+    font-weight: 700;
+}
+
+/* =========================================================
+   DESCRIPTION
+========================================================= */
+
+.bike-details-description {
+    margin-top: 25px;
+}
+
+.bike-details-description h2 {
+    margin: 0 0 8px;
+    color: #111827;
+    font-size: 20px;
+    font-weight: 750;
+}
+
+.bike-details-description p {
+    margin: 0;
+    color: #64748b;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.bike-details-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    margin-top: auto;
+    padding-top: 25px;
+}
+
+.bike-details-price {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+}
+
+.bike-details-price strong {
+    color: #111827;
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.bike-details-price span {
+    color: #64748b;
+    font-size: 15px;
+}
+
+/* =========================================================
+   BOOK BUTTON
+========================================================= */
+
+.bike-details-book {
+    min-width: 190px;
+    height: 52px;
+    padding: 0 28px;
+    border: none;
+    border-radius: 10px;
+    background: #7c3aed;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.bike-details-book:hover:not(:disabled) {
+    background: #6d28d9;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(124, 58, 237, 0.22);
+}
+
+.bike-details-book:disabled {
+    background: #cbd5e1;
+    cursor: not-allowed;
+}
+
+/* =========================================================
+   MESSAGES
+========================================================= */
+
+.bike-details-message {
+    width: min(700px, calc(100% - 40px));
+    margin: 80px auto;
+    padding: 50px;
+    text-align: center;
+    background: #ffffff;
+    border: 1px solid #dfe5ee;
+    border-radius: 18px;
+    box-shadow: 0 15px 35px rgba(30, 41, 59, 0.06);
+    box-sizing: border-box;
+}
+
+.bike-details-message h2 {
+    margin: 0 0 10px;
+    color: #111827;
+}
+
+.bike-details-message p {
+    margin: 0 0 25px;
+    color: #64748b;
+}
+
+.bike-details-message button {
+    padding: 12px 22px;
+    border: none;
+    border-radius: 8px;
+    background: #7c3aed;
+    color: #ffffff;
+    font-family: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .bike-details-container {
+        width: min(100% - 40px, 700px);
+    }
+
+    .bike-details-card {
+        grid-template-columns: 1fr;
+    }
+
+    .bike-details-image {
+        min-height: 420px;
+    }
+
+    .bike-details-image img {
+        max-height: 360px;
+    }
+
+    .bike-details-content {
+        padding: 40px;
+    }
+
+    .bike-details-top h1 {
+        font-size: 40px;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .bike-details-page {
+        padding: 30px 0 50px;
+    }
+
+    .bike-details-container {
+        width: calc(100% - 24px);
+    }
+
+    .bike-details-image {
+        min-height: 300px;
+        padding: 20px;
+    }
+
+    .bike-details-image img {
+        max-height: 300px;
+    }
+
+    .bike-details-content {
+        padding: 30px 24px;
+    }
+
+    .bike-details-top {
+        flex-direction: column;
+    }
+
+    .bike-details-top h1 {
+        font-size: 34px;
+    }
+
+    .bike-details-info {
+        grid-template-columns: 1fr;
+    }
+
+    .bike-details-info-item,
+    .bike-details-info-item:nth-child(even) {
+        padding: 18px 0;
+        border-left: none;
+    }
+
+    .bike-details-info-item:nth-child(n + 3) {
+        border-top: none;
+    }
+
+    .bike-details-info-item + .bike-details-info-item {
+        border-top: 1px solid #dce5f0;
+    }
+
+    .bike-details-footer {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .bike-details-book {
+        width: 100%;
+    }
+}
+
+/* =========================================================
+   BOOKING PAGE
+========================================================= */
+
+.booking-page {
+    min-height: calc(100vh - 90px);
+    background: #f4f7fb;
+    padding: 45px 0 70px;
+    box-sizing: border-box;
+}
+
+.booking-container {
+    width: min(1200px, calc(100% - 120px));
+    margin: 0 auto;
+}
+
+
+/* BACK BUTTON */
+
+.booking-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    margin: 0 0 22px;
+    padding: 0;
+
+    border: none;
+    background: transparent;
+
+    color: #64748b;
+
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.booking-back:hover {
+    color: #7c3aed;
+}
+
+
+/* MAIN CARD */
+
+.booking-card {
+    display: grid;
+    grid-template-columns: 48% 52%;
+
+    overflow: hidden;
+
+    min-height: 590px;
+
+    background: #ffffff;
+
+    border: 1px solid #dfe5ee;
+    border-radius: 22px;
+
+    box-shadow:
+        0 18px 45px rgba(30, 41, 59, 0.08);
+}
+
+
+/* =========================================================
+   LEFT SIDE
+========================================================= */
+
+.booking-bike-section {
+    display: flex;
+    flex-direction: column;
+
+    background: #eef3f8;
+}
+
+
+.booking-bike-image {
+    flex: 1;
+
+    min-height: 370px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 35px;
+
+    box-sizing: border-box;
+}
+
+
+.booking-bike-image img {
+    display: block;
+
+    width: 100%;
+    max-width: 500px;
+
+    max-height: 360px;
+
+    height: auto;
+
+    object-fit: contain;
+}
+
+
+.booking-image-placeholder {
+    color: #94a3b8;
+
+    font-size: 18px;
+    font-weight: 600;
+}
+
+
+/* BIKE CONTENT */
+
+.booking-bike-content {
+    padding: 30px 45px 38px;
+
+    background: #ffffff;
+
+    border-top: 1px solid #dce5f0;
+}
+
+
+.booking-label {
+    margin: 0 0 10px;
+
+    color: #7c3aed;
+
+    font-size: 13px;
+    font-weight: 800;
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+}
+
+
+.booking-bike-content h1 {
+    margin: 0;
+
+    color: #111827;
+
+    font-size: 38px;
+    line-height: 1.1;
+
+    font-weight: 800;
+
+    letter-spacing: -1px;
+}
+
+
+.booking-bike-brand {
+    margin: 9px 0 22px;
+
+    color: #64748b;
+
+    font-size: 17px;
+    font-weight: 500;
+}
+
+
+.booking-bike-price {
+    display: flex;
+    align-items: baseline;
+
+    gap: 5px;
+}
+
+
+.booking-bike-price strong {
+    color: #111827;
+
+    font-size: 30px;
+    font-weight: 800;
+}
+
+
+.booking-bike-price span {
+    color: #64748b;
+
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   RIGHT SIDE
+========================================================= */
+
+.booking-form-section {
+    padding: 38px 50px 32px;
+
+    box-sizing: border-box;
+}
+
+
+.booking-form-header {
+    margin-bottom: 24px;
+}
+
+
+.booking-form-header .booking-label {
+    margin-bottom: 8px;
+}
+
+
+.booking-form-header h2 {
+    margin: 0;
+
+    color: #111827;
+
+    font-size: 34px;
+    line-height: 1.1;
+
+    font-weight: 800;
+
+    letter-spacing: -1px;
+}
+
+
+.booking-form-header > p:last-child {
+    margin: 10px 0 0;
+
+    color: #64748b;
+
+    font-size: 15px;
+
+    line-height: 1.5;
+}
+
+
+/* FORM FIELD */
+
+.booking-field {
+    margin-bottom: 17px;
+}
+
+
+.booking-field label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #334155;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+
+.booking-field input {
+    width: 100%;
+    height: 50px;
+
+    padding: 0 15px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    color: #111827;
+
+    font-family: inherit;
+    font-size: 15px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+
+.booking-field input::placeholder {
+    color: #94a3b8;
+}
+
+
+.booking-field input:focus {
+    border-color: #7c3aed;
+
+    box-shadow:
+        0 0 0 3px rgba(124, 58, 237, 0.10);
+}
+/* =========================================================
+   DATE AND TIME INPUT
+========================================================= */
+
+.booking-datetime-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+
+.booking-datetime-wrapper input {
+    padding-right: 55px;
+    cursor: pointer;
+}
+
+
+/* CALENDAR ICON */
+
+.booking-datetime-icon {
+    position: absolute;
+
+    top: 50%;
+    right: 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 30px;
+    height: 30px;
+
+    transform: translateY(-50%);
+
+    border-radius: 7px;
+
+    background: #f1eaff;
+
+    color: #7c3aed;
+
+    pointer-events: none;
+}
+
+
+.booking-datetime-icon svg {
+    width: 17px;
+    height: 17px;
+
+    fill: currentColor;
+}
+
+/* =========================================================
+   AVAILABILITY
+========================================================= */
+
+.booking-status {
+    margin: -5px 0 22px;
+
+    padding: 12px 15px;
+
+    border-radius: 9px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    line-height: 1.4;
+}
+
+
+.booking-status.checking {
+    background: #f1f5f9;
+
+    color: #64748b;
+}
+
+
+.booking-status.success {
+    background: #e8f8ee;
+
+    color: #159447;
+}
+
+
+.booking-status.unavailable {
+    background: #fee2e2;
+
+    color: #dc2626;
+}
+
+
+/* =========================================================
+   PRICE SUMMARY
+========================================================= */
+
+.booking-summary {
+    margin-top: 20px;
+
+    padding: 20px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+}
+
+
+.booking-summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 12px;
+}
+
+
+.booking-summary-row span {
+    color: #64748b;
+
+    font-size: 14px;
+    font-weight: 500;
+}
+
+
+.booking-summary-row strong {
+    color: #111827;
+
+    font-size: 15px;
+    font-weight: 700;
+}
+
+
+.booking-summary-divider {
+    height: 1px;
+
+    margin: 16px 0;
+
+    background: #dce5f0;
+}
+
+
+.booking-summary-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+.booking-summary-total span {
+    color: #334155;
+
+    font-size: 15px;
+    font-weight: 700;
+}
+
+
+.booking-summary-total strong {
+    color: #7c3aed;
+
+    font-size: 24px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.booking-error {
+    margin-top: 18px;
+
+    padding: 12px 15px;
+
+    background: #fee2e2;
+
+    border-radius: 9px;
+
+    color: #dc2626;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   SUBMIT BUTTON
+========================================================= */
+
+.booking-submit {
+    width: 100%;
+    height: 52px;
+
+    margin-top: 16px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: #7c3aed;
+
+    color: #ffffff;
+
+    font-family: inherit;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.booking-submit:hover:not(:disabled) {
+    background: #6d28d9;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 22px rgba(124, 58, 237, 0.22);
+}
+
+
+.booking-submit:disabled {
+    background: #cbd5e1;
+
+    cursor: not-allowed;
+
+    transform: none;
+
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .booking-container {
+        width: min(100% - 40px, 700px);
+    }
+
+    .booking-card {
+        grid-template-columns: 1fr;
+    }
+
+    .booking-bike-image {
+        min-height: 380px;
+    }
+
+    .booking-bike-image img {
+        max-height: 340px;
+    }
+
+    .booking-bike-content {
+        padding: 28px 40px 35px;
+    }
+
+    .booking-form-section {
+        padding: 40px;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .booking-page {
+        padding: 30px 0 50px;
+    }
+
+    .booking-container {
+        width: calc(100% - 24px);
+    }
+
+    .booking-card {
+        border-radius: 16px;
+    }
+
+    .booking-bike-image {
+        min-height: 280px;
+
+        padding: 20px;
+    }
+
+    .booking-bike-image img {
+        max-height: 270px;
+    }
+
+    .booking-bike-content {
+        padding: 25px 24px 30px;
+    }
+
+    .booking-bike-content h1 {
+        font-size: 32px;
+    }
+
+    .booking-form-section {
+        padding: 30px 24px;
+    }
+
+    .booking-form-header h2 {
+        font-size: 30px;
+    }
+
+}
+
+/* =========================================================
+   MY BOOKINGS PAGE
+========================================================= */
+
+.my-bookings-page {
+    min-height: calc(100vh - 90px);
+    background: #f4f7fb;
+    padding: 55px 0 80px;
+    box-sizing: border-box;
+}
+
+.my-bookings-header {
+    width: min(1200px, calc(100% - 120px));
+    margin: 0 auto;
+    text-align: center;
+}
+
+.my-bookings-label {
+    margin: 0 0 10px;
+
+    color: #7c3aed;
+
+    font-size: 14px;
+    font-weight: 800;
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+}
+
+.my-bookings-header h1 {
+    margin: 0;
+
+    color: #111827;
+
+    font-size: 46px;
+    line-height: 1.1;
+
+    font-weight: 800;
+
+    letter-spacing: -1.5px;
+}
+
+.my-bookings-header > p:last-child {
+    margin: 12px 0 0;
+
+    color: #64748b;
+
+    font-size: 17px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   TOP ACTIONS
+========================================================= */
+
+.my-bookings-top-actions {
+    width: min(1200px, calc(100% - 120px));
+
+    margin: 30px auto 45px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.my-bookings-top-actions button {
+    height: 44px;
+
+    padding: 0 20px;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    color: #334155;
+
+    font-family: inherit;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        color 0.2s ease,
+        background 0.2s ease;
+}
+
+.my-bookings-top-actions button:hover {
+    border-color: #7c3aed;
+
+    color: #7c3aed;
+
+    background: #faf8ff;
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.my-bookings-error {
+    width: min(1200px, calc(100% - 120px));
+
+    margin: 0 auto 30px;
+
+    padding: 14px 18px;
+
+    box-sizing: border-box;
+
+    background: #fee2e2;
+
+    border-radius: 10px;
+
+    color: #dc2626;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   BOOKING SECTION
+========================================================= */
+
+.my-bookings-section {
+    width: min(1200px, calc(100% - 120px));
+
+    margin: 0 auto 45px;
+}
+
+.my-bookings-section-header {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom: 18px;
+}
+
+.my-bookings-section-header h2 {
+    margin: 0;
+
+    color: #111827;
+
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.my-bookings-section-header span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 28px;
+    height: 28px;
+
+    padding: 0 8px;
+
+    box-sizing: border-box;
+
+    border-radius: 999px;
+
+    background: #f1eaff;
+
+    color: #7c3aed;
+
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.my-bookings-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 20px;
+}
+
+
+/* =========================================================
+   BOOKING CARD
+========================================================= */
+
+.my-booking-card {
+    display: grid;
+
+    grid-template-columns: 320px 1fr;
+
+    min-height: 270px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #dfe5ee;
+    border-radius: 18px;
+
+    box-shadow:
+        0 14px 35px rgba(30, 41, 59, 0.07);
+}
+
+
+/* IMAGE */
+
+.my-booking-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 270px;
+
+    padding: 25px;
+
+    box-sizing: border-box;
+
+    background: #eef3f8;
+}
+
+.my-booking-image img {
+    display: block;
+
+    width: 100%;
+
+    max-width: 290px;
+    max-height: 220px;
+
+    height: auto;
+
+    object-fit: contain;
+}
+
+.my-booking-image-placeholder {
+    color: #94a3b8;
+
+    font-size: 16px;
+    font-weight: 600;
+}
+
+
+/* CONTENT */
+
+.my-booking-content {
+    display: flex;
+    flex-direction: column;
+
+    padding: 30px 35px;
+
+    box-sizing: border-box;
+}
+
+
+/* HEADER */
+
+.my-booking-header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding-bottom: 22px;
+
+    border-bottom: 1px solid #dce5f0;
+}
+
+.my-booking-label {
+    margin: 0 0 7px;
+
+    color: #7c3aed;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    letter-spacing: 1.7px;
+
+    text-transform: uppercase;
+}
+
+.my-booking-header-row h2 {
+    margin: 0;
+
+    color: #111827;
+
+    font-size: 30px;
+    line-height: 1.1;
+
+    font-weight: 800;
+
+    letter-spacing: -0.7px;
+}
+
+.my-booking-brand {
+    margin: 7px 0 0;
+
+    color: #64748b;
+
+    font-size: 15px;
+    font-weight: 500;
+}
+
+
+/* STATUS */
+
+.my-booking-status {
+    flex-shrink: 0;
+
+    padding: 9px 16px;
+
+    border-radius: 999px;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    text-transform: capitalize;
+
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.my-booking-status.pending {
+    background: #fff7e6;
+    color: #d97706;
+}
+
+.my-booking-status.confirmed {
+    background: #e8f8ee;
+    color: #159447;
+}
+
+.my-booking-status.completed {
+    background: #e0f2fe;
+    color: #0284c7;
+}
+
+.my-booking-status.cancelled {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+
+/* =========================================================
+   BOOKING INFORMATION
+========================================================= */
+
+.my-booking-info {
+    display: grid;
+
+    grid-template-columns: 1.1fr 1fr 1fr;
+
+    gap: 0;
+
+    margin-top: 22px;
+}
+
+.my-booking-info-item {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+
+    padding: 0 22px;
+
+    box-sizing: border-box;
+}
+
+.my-booking-info-item:first-child {
+    padding-left: 0;
+}
+
+.my-booking-info-item + .my-booking-info-item {
+    border-left: 1px solid #dce5f0;
+}
+
+.my-booking-info-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 32px;
+    height: 32px;
+
+    margin-bottom: 2px;
+
+    border-radius: 8px;
+
+    background: #f1eaff;
+
+    color: #7c3aed;
+}
+
+.my-booking-info-icon svg {
+    width: 17px;
+    height: 17px;
+
+    fill: currentColor;
+}
+
+.my-booking-info-item span {
+    color: #8a9bb0;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 0.7px;
+
+    text-transform: uppercase;
+}
+
+.my-booking-info-item strong {
+    color: #111827;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.my-booking-footer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-top: auto;
+
+    padding-top: 22px;
+}
+
+.my-booking-total {
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+.my-booking-total span {
+    color: #8a9bb0;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 0.7px;
+
+    text-transform: uppercase;
+}
+
+.my-booking-total strong {
+    color: #111827;
+
+    font-size: 27px;
+    font-weight: 800;
+}
+
+
+/* CANCEL */
+
+.my-booking-cancel {
+    min-width: 150px;
+
+    height: 44px;
+
+    padding: 0 20px;
+
+    border: 1px solid #fecaca;
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    color: #dc2626;
+
+    font-family: inherit;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.my-booking-cancel:hover:not(:disabled) {
+    background: #fee2e2;
+
+    border-color: #fca5a5;
+}
+
+.my-booking-cancel:disabled {
+    opacity: 0.6;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.my-bookings-empty {
+    width: min(700px, calc(100% - 120px));
+
+    margin: 20px auto;
+
+    padding: 55px 40px;
+
+    box-sizing: border-box;
+
+    text-align: center;
+
+    background: #ffffff;
+
+    border: 1px solid #dfe5ee;
+    border-radius: 18px;
+
+    box-shadow:
+        0 14px 35px rgba(30, 41, 59, 0.06);
+}
+
+.my-bookings-empty h2 {
+    margin: 0 0 10px;
+
+    color: #111827;
+
+    font-size: 26px;
+    font-weight: 800;
+}
+
+.my-bookings-empty p {
+    max-width: 500px;
+
+    margin: 0 auto 25px;
+
+    color: #64748b;
+
+    font-size: 15px;
+
+    line-height: 1.6;
+}
+
+.my-bookings-empty button {
+    height: 46px;
+
+    padding: 0 24px;
+
+    border: none;
+    border-radius: 9px;
+
+    background: #7c3aed;
+
+    color: #ffffff;
+
+    font-family: inherit;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.my-bookings-empty button:hover {
+    background: #6d28d9;
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.my-bookings-message {
+    width: min(700px, calc(100% - 120px));
+
+    margin: 80px auto;
+
+    padding: 50px;
+
+    box-sizing: border-box;
+
+    text-align: center;
+
+    background: #ffffff;
+
+    border: 1px solid #dfe5ee;
+    border-radius: 18px;
+
+    color: #64748b;
+
+    font-size: 17px;
+
+    box-shadow:
+        0 14px 35px rgba(30, 41, 59, 0.06);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .my-bookings-header,
+    .my-bookings-top-actions,
+    .my-bookings-section,
+    .my-bookings-error {
+        width: min(100% - 40px, 700px);
+    }
+
+    .my-booking-card {
+        grid-template-columns: 1fr;
+    }
+
+    .my-booking-image {
+        min-height: 300px;
+    }
+
+    .my-booking-image img {
+        max-height: 260px;
+    }
+
+    .my-booking-content {
+        padding: 30px;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .my-bookings-page {
+        padding: 35px 0 55px;
+    }
+
+    .my-bookings-header,
+    .my-bookings-top-actions,
+    .my-bookings-section,
+    .my-bookings-error {
+        width: calc(100% - 24px);
+    }
+
+    .my-bookings-header h1 {
+        font-size: 36px;
+    }
+
+    .my-bookings-header > p:last-child {
+        font-size: 15px;
+    }
+
+    .my-bookings-top-actions {
+        flex-direction: column;
+
+        align-items: stretch;
+
+        gap: 10px;
+
+        margin-bottom: 35px;
+    }
+
+    .my-bookings-top-actions button {
+        width: 100%;
+    }
+
+    .my-booking-image {
+        min-height: 240px;
+
+        padding: 20px;
+    }
+
+    .my-booking-image img {
+        max-height: 220px;
+    }
+
+    .my-booking-content {
+        padding: 25px 20px;
+    }
+
+    .my-booking-header-row {
+        flex-direction: column;
+    }
+
+    .my-booking-header-row h2 {
+        font-size: 26px;
+    }
+
+    .my-booking-info {
+        grid-template-columns: 1fr;
+
+        gap: 18px;
+    }
+
+    .my-booking-info-item,
+    .my-booking-info-item:first-child {
+        padding: 0;
+    }
+
+    .my-booking-info-item + .my-booking-info-item {
+        padding-top: 18px;
+
+        border-left: none;
+        border-top: 1px solid #dce5f0;
+    }
+
+    .my-booking-footer {
+        align-items: stretch;
+
+        flex-direction: column;
+    }
+
+    .my-booking-cancel {
+        width: 100%;
+    }
+
+    .my-bookings-empty {
+        width: calc(100% - 24px);
+
+        padding: 45px 24px;
+    }
+
+}
