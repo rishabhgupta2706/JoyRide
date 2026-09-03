@@ -228,14 +228,14 @@ function Bikes() {
                                     <div className="bike-info">
 
                                         <p>
-                                            Category:{" "}
-                                            {bike.category}
-                                        </p>
+                                            <span className="bike-info-icon">◇</span>
+                                                    Category: {bike.category}
+                                                </p>
 
-                                        <p>
-                                            Location:{" "}
-                                            {bike.location}
-                                        </p>
+                                                <p>
+                                            <span className="bike-info-icon">⌖</span>
+                                                    Location: {bike.location}
+                                            </p>
 
                                     </div>
 
