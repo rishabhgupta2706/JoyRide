@@ -179,53 +179,85 @@ function AdminDashboard() {
 
                 <div className="admin-main-stats">
 
-                    <div className="admin-stat-card">
-                        <span>
-                            Total Bikes
-                        </span>
+    <div className="admin-stat-card">
 
-                        <strong>
-                            {totalBikes}
-                        </strong>
-                    </div>
+        <div className="admin-stat-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 16v-4l2-5h10l2 5v4h-2v-2H7v2H5Zm3-7h8l-.8-2H8.8L8 9Zm1 5h6v-1H9v1Z" />
+            </svg>
+        </div>
 
+        <span>
+            Total Bikes
+        </span>
 
-                    <div className="admin-stat-card">
-                        <span>
-                            Available Bikes
-                        </span>
+        <strong>
+            {totalBikes}
+        </strong>
 
-                        <strong>
-                            {availableBikes}
-                        </strong>
-                    </div>
+    </div>
 
 
-                    <div className="admin-stat-card">
-                        <span>
-                            Total Bookings
-                        </span>
+    <div className="admin-stat-card">
 
-                        <strong>
-                            {totalBookings}
-                        </strong>
-                    </div>
+        <div className="admin-stat-icon available">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2Z" />
+            </svg>
+        </div>
+
+        <span>
+            Available Bikes
+        </span>
+
+        <strong>
+            {availableBikes}
+        </strong>
+
+    </div>
 
 
-                    <div className="admin-stat-card">
-                        <span>
-                            Revenue
-                        </span>
+    <div className="admin-stat-card">
 
-                        <strong>
-                            ₹
-                            {totalRevenue.toLocaleString(
-                                "en-IN"
-                            )}
-                        </strong>
-                    </div>
+        <div className="admin-stat-icon bookings">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 15H5V10h14v9Zm-9-7H7v2h3v-2Zm4 0h-3v2h3v-2Zm3 0h-2v2h2v-2Z" />
+            </svg>
+        </div>
 
-                </div>
+        <span>
+            Total Bookings
+        </span>
+
+        <strong>
+            {totalBookings}
+        </strong>
+
+    </div>
+
+
+    <div className="admin-stat-card">
+
+        <div className="admin-stat-icon revenue">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M13.5 3h-3v2.1C8.07 5.55 6.5 7.1 6.5 9.2c0 2.72 2.03 3.76 5.18 4.55 2.2.56 2.82 1.08 2.82 2.12 0 1.02-.94 1.7-2.38 1.7-1.57 0-2.65-.78-3.32-2.04l-2.47 1.43c.9 1.73 2.28 2.72 4.17 3.16V22h3v-1.86c2.55-.42 4-2.02 4-4.38 0-2.68-1.87-3.72-5.08-4.55-2.27-.59-2.92-1.13-2.92-2.14 0-.9.77-1.52 2-1.52 1.22 0 2.05.59 2.67 1.67l2.42-1.48c-.77-1.43-1.8-2.32-3.09-2.68V3Z" />
+            </svg>
+        </div>
+
+        <span>
+            Revenue
+        </span>
+
+        <strong>
+            ₹
+            {totalRevenue.toLocaleString(
+                "en-IN"
+            )}
+        </strong>
+
+    </div>
+
+</div>
 
             </section>
 
