@@ -4284,8 +4284,8 @@ button {
     border: 1px solid #111827 !important;
     border-radius: 10px !important;
 
-    background: #ffffff !important;
-    color: #111827 !important;
+     background: #ffffff !important;
+    color: #111827 !important; 
 
     font-family: inherit !important;
     font-size: 13px !important;
@@ -4307,8 +4307,8 @@ button {
     border: 1px solid #111827 !important;
     border-radius: 10px !important;
 
-    background: #111827 !important;
-    color: #ffffff !important;
+    /* background: #111827 !important;
+    color: #ffffff !important; */
 
     font-family: inherit !important;
     font-size: 13px !important;
@@ -9954,4 +9954,1013 @@ body {
         padding: 45px 24px;
     }
 
+}
+
+/* =========================================================
+   AI RECOMMENDATION PAGE
+========================================================= */
+
+.ai-page {
+    width: 100%;
+    min-width: 100%;
+    max-width: none;
+
+    min-height: calc(100vh - 90px);
+
+    margin: 0;
+    padding: 0;
+
+    background: #f4f7fb;
+
+    box-sizing: border-box;
+}
+
+.ai-hero {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.ai-hero {
+    padding: 65px 20px 60px;
+
+    background: #eef3f8;
+
+    border-bottom: 1px solid #dce5f0;
+}
+
+.ai-hero-content {
+    width: min(900px, 100%);
+
+    margin: 0 auto;
+
+    text-align: center;
+}
+
+.ai-badge {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 8px 16px;
+
+    margin-bottom: 18px;
+
+    border-radius: 999px;
+
+    background: #f1eaff;
+
+    color: #7c3aed;
+
+    font-size: 13px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
+}
+
+.ai-hero h1 {
+    margin: 0;
+
+    color: #111827;
+
+    font-size: 50px;
+    line-height: 1.05;
+
+    font-weight: 800;
+
+    letter-spacing: -1.8px;
+}
+
+.ai-hero-content > p {
+    max-width: 650px;
+
+    margin: 18px auto 30px;
+
+    color: #64748b;
+
+    font-size: 17px;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   AI INPUT
+========================================================= */
+
+.ai-input-container {
+    width: 100%;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #d6deea;
+    border-radius: 16px;
+
+    box-shadow:
+        0 15px 35px rgba(30, 41, 59, 0.08);
+
+    text-align: left;
+}
+
+.ai-input-container textarea {
+    display: block;
+
+    width: 100%;
+
+    min-height: 135px;
+
+    padding: 20px;
+
+    box-sizing: border-box;
+
+    border: none;
+    outline: none;
+
+    resize: vertical;
+
+    background: #ffffff;
+
+    color: #111827;
+
+    font-family: inherit;
+
+    font-size: 16px;
+
+    line-height: 1.6;
+}
+
+.ai-input-container textarea::placeholder {
+    color: #94a3b8;
+}
+
+.ai-input-container textarea:focus {
+    outline: none;
+}
+
+.ai-input-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 13px 15px;
+
+    border-top: 1px solid #e2e8f0;
+
+    background: #f8fafc;
+}
+
+.ai-input-footer span {
+    color: #94a3b8;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.ai-input-footer button {
+    min-width: 150px;
+
+    height: 46px;
+
+    padding: 0 22px;
+
+    border: none;
+    border-radius: 9px;
+
+    background: #7c3aed;
+
+    color: #ffffff;
+
+    font-family: inherit;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.ai-input-footer button:hover:not(:disabled) {
+    background: #6d28d9;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 9px 20px rgba(124, 58, 237, 0.20);
+}
+
+.ai-input-footer button:disabled {
+    background: #cbd5e1;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   EXAMPLES
+========================================================= */
+
+.ai-examples {
+    margin-top: 25px;
+}
+
+.ai-examples > p {
+    margin: 0 0 12px;
+
+    color: #64748b;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.ai-example-list {
+    display: flex;
+    flex-wrap: wrap;
+
+    justify-content: center;
+
+    gap: 9px;
+}
+
+.ai-example-list button {
+    padding: 9px 14px;
+
+    border: 1px solid #d6deea;
+    border-radius: 999px;
+
+    background: #ffffff;
+
+    color: #475569;
+
+    font-family: inherit;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        color 0.2s ease,
+        background 0.2s ease;
+}
+
+.ai-example-list button:hover {
+    border-color: #a78bfa;
+
+    background: #faf8ff;
+
+    color: #7c3aed;
+}
+
+.ai-shortcut {
+    margin: 17px 0 0 !important;
+
+    color: #94a3b8 !important;
+
+    font-size: 12px !important;
+}
+
+
+/* =========================================================
+   MESSAGES
+========================================================= */
+
+.ai-message {
+    width: min(900px, calc(100% - 120px));
+
+    margin: 35px auto 0;
+
+    padding: 18px 22px;
+
+    box-sizing: border-box;
+
+    border-radius: 12px;
+
+    text-align: center;
+}
+
+.ai-message strong {
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-size: 15px;
+}
+
+.ai-message p {
+    margin: 0;
+
+    font-size: 14px;
+}
+
+.ai-error {
+    background: #fee2e2;
+
+    color: #dc2626;
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.ai-loading {
+    width: min(900px, calc(100% - 120px));
+
+    margin: 45px auto;
+
+    padding: 55px 30px;
+
+    box-sizing: border-box;
+
+    text-align: center;
+
+    background: #ffffff;
+
+    border: 1px solid #dfe5ee;
+    border-radius: 18px;
+
+    box-shadow:
+        0 14px 35px rgba(30, 41, 59, 0.06);
+}
+
+.ai-loading-spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 48px;
+    height: 48px;
+
+    margin: 0 auto 20px;
+
+    border: 4px solid #e9d5ff;
+    border-top-color: #7c3aed;
+
+    border-radius: 50%;
+
+    animation: ai-spin 0.8s linear infinite;
+}
+
+.ai-loading-spinner div {
+    display: none;
+}
+
+@keyframes ai-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.ai-loading h2 {
+    margin: 0 0 8px;
+
+    color: #111827;
+
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.ai-loading p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   NO RESULTS
+========================================================= */
+
+.ai-no-results {
+    width: min(800px, calc(100% - 120px));
+
+    margin: 45px auto 70px;
+
+    padding: 55px 40px;
+
+    box-sizing: border-box;
+
+    text-align: center;
+
+    background: #ffffff;
+
+    border: 1px solid #dfe5ee;
+    border-radius: 18px;
+
+    box-shadow:
+        0 14px 35px rgba(30, 41, 59, 0.06);
+}
+
+.ai-no-results-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 52px;
+    height: 52px;
+
+    margin: 0 auto 18px;
+
+    border-radius: 50%;
+
+    background: #f1eaff;
+
+    color: #7c3aed;
+
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.ai-no-results h2 {
+    margin: 0 0 10px;
+
+    color: #111827;
+
+    font-size: 27px;
+    font-weight: 800;
+}
+
+.ai-no-results > p {
+    max-width: 600px;
+
+    margin: 0 auto;
+
+    color: #64748b;
+
+    font-size: 15px;
+
+    line-height: 1.6;
+}
+
+.ai-no-results-tips {
+    display: flex;
+    flex-wrap: wrap;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    margin-top: 25px;
+}
+
+.ai-no-results-tips span {
+    padding: 8px 13px;
+
+    border-radius: 999px;
+
+    background: #f8fafc;
+
+    color: #64748b;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   RESULTS
+========================================================= */
+
+.ai-results {
+    width: min(1200px, calc(100% - 120px));
+
+    margin: 50px auto 80px;
+}
+
+.ai-results-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 30px;
+
+    margin-bottom: 25px;
+}
+
+.ai-results-label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #7c3aed;
+
+    font-size: 13px;
+    font-weight: 800;
+
+    letter-spacing: 1.8px;
+
+    text-transform: uppercase;
+}
+
+.ai-results-header h2 {
+    margin: 0;
+
+    color: #111827;
+
+    font-size: 32px;
+    font-weight: 800;
+
+    letter-spacing: -0.8px;
+}
+
+.ai-results-header p {
+    margin: 8px 0 0;
+
+    color: #64748b;
+
+    font-size: 15px;
+}
+
+.ai-results-count {
+    flex-shrink: 0;
+
+    padding: 10px 16px;
+
+    border-radius: 999px;
+
+    background: #f1eaff;
+
+    color: #7c3aed;
+
+    font-size: 13px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   BIKE GRID
+========================================================= */
+
+.ai-bike-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 22px;
+}
+
+
+/* =========================================================
+   BIKE CARD
+========================================================= */
+
+.ai-bike-card {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #dfe5ee;
+    border-radius: 18px;
+
+    box-shadow:
+        0 14px 35px rgba(30, 41, 59, 0.07);
+}
+
+
+/* RANK */
+
+.ai-rank {
+    position: absolute;
+
+    top: 16px;
+    left: 16px;
+
+    z-index: 2;
+
+    padding: 7px 11px;
+
+    border-radius: 999px;
+
+    background: #7c3aed;
+
+    color: #ffffff;
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+
+/* IMAGE */
+
+.ai-bike-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 270px;
+
+    padding: 25px;
+
+    box-sizing: border-box;
+
+    background: #eef3f8;
+}
+
+.ai-bike-image img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+}
+
+.ai-bike-no-image {
+    color: #94a3b8;
+
+    font-size: 16px;
+    font-weight: 600;
+}
+
+
+/* CONTENT */
+
+.ai-bike-content {
+    display: flex;
+    flex-direction: column;
+
+    padding: 25px;
+}
+
+
+/* TITLE */
+
+.ai-bike-title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+.ai-bike-title-row h3 {
+    margin: 0;
+
+    color: #111827;
+
+    font-size: 25px;
+    line-height: 1.15;
+
+    font-weight: 800;
+
+    letter-spacing: -0.5px;
+}
+
+.ai-bike-subtitle {
+    margin: 7px 0 0;
+
+    color: #64748b;
+
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.ai-available {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    flex-shrink: 0;
+
+    padding: 9px 15px;
+
+    border-radius: 999px;
+
+    background: #dcfce7;
+
+    color: #16a34a;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    letter-spacing: 0.3px;
+}
+
+.ai-available::before {
+    content: "";
+
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: #22c55e;
+
+    box-shadow:
+        0 0 8px rgba(34, 197, 94, 0.7);
+}
+
+
+/* META */
+
+.ai-bike-meta {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    margin-top: 22px;
+
+    border-top: 1px solid #dce5f0;
+    border-bottom: 1px solid #dce5f0;
+}
+
+.ai-bike-meta > div {
+    padding: 16px 14px;
+}
+
+.ai-bike-meta > div + div {
+    border-left: 1px solid #dce5f0;
+}
+
+.ai-bike-meta span {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #8a9bb0;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 0.7px;
+
+    text-transform: uppercase;
+}
+
+.ai-bike-meta strong {
+    color: #111827;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+
+/* PRICE */
+
+.ai-bike-price {
+    display: flex;
+    align-items: baseline;
+
+    gap: 5px;
+
+    margin-top: 20px;
+}
+
+.ai-bike-price strong {
+    color: #111827;
+
+    font-size: 27px;
+    font-weight: 800;
+}
+
+.ai-bike-price span {
+    color: #64748b;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   REASONS
+========================================================= */
+
+.ai-reasons {
+    margin-top: 20px;
+
+    padding: 17px;
+
+    border-radius: 11px;
+
+    background: #faf8ff;
+
+    border: 1px solid #ede9fe;
+}
+
+.ai-reasons h4 {
+    margin: 0 0 10px;
+
+    color: #111827;
+
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.ai-reasons ul {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+}
+
+.ai-reasons li {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 8px;
+
+    color: #64748b;
+
+    font-size: 13px;
+
+    line-height: 1.45;
+}
+
+.ai-reasons li span {
+    flex-shrink: 0;
+
+    color: #7c3aed;
+
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.ai-bike-actions {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 10px;
+
+    margin-top: 22px;
+}
+
+.ai-bike-actions button {
+    height: 46px;
+
+    border-radius: 9px;
+
+    font-family: inherit;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.ai-details-button {
+    border: 1px solid #cbd5e1;
+
+    background: #ffffff;
+
+    color: #334155;
+}
+
+.ai-details-button:hover {
+    border-color: #7c3aed;
+
+    background: #faf8ff;
+
+    color: #7c3aed;
+}
+
+.ai-book-button {
+    border: none;
+
+    background: #7c3aed;
+
+    color: #ffffff;
+}
+
+.ai-book-button:hover {
+    background: #6d28d9;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .ai-bike-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ai-results,
+    .ai-message,
+    .ai-loading,
+    .ai-no-results {
+        width: min(100% - 40px, 700px);
+    }
+
+    .ai-hero h1 {
+        font-size: 44px;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .ai-hero {
+        padding: 45px 12px;
+    }
+
+    .ai-hero h1 {
+        font-size: 36px;
+    }
+
+    .ai-hero-content > p {
+        font-size: 15px;
+    }
+
+    .ai-input-container textarea {
+        min-height: 120px;
+    }
+
+    .ai-input-footer {
+        gap: 12px;
+    }
+
+    .ai-input-footer button {
+        min-width: 135px;
+    }
+
+    .ai-example-list {
+        justify-content: flex-start;
+    }
+
+    .ai-results {
+        width: calc(100% - 24px);
+
+        margin-top: 35px;
+    }
+
+    .ai-results-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .ai-results-header h2 {
+        font-size: 28px;
+    }
+
+    .ai-bike-title-row {
+        flex-direction: column;
+    }
+
+    .ai-bike-image {
+        height: 230px;
+    }
+
+    .ai-bike-content {
+        padding: 22px 20px;
+    }
+
+    .ai-bike-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .ai-no-results,
+    .ai-loading {
+        width: calc(100% - 24px);
+
+        padding: 45px 24px;
+    }
+
+}
+.ai-bike-actions .ai-book-button {
+    background: #7c3aed !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+.ai-bike-actions .ai-book-button:hover {
+    background: #6d28d9 !important;
 }
