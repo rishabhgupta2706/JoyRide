@@ -11,6 +11,7 @@ function AdminBikes() {
     const [error, setError] = useState("");
 
     const [editingBikeId, setEditingBikeId] = useState(null);
+    const [showForm, setShowForm] = useState(false);
     const [imageFile, setImageFile] = useState(null);
 
     const [formData, setFormData] = useState({
@@ -102,6 +103,7 @@ function AdminBikes() {
 
         setImageFile(null);
         setEditingBikeId(null);
+        setShowForm(false);
     };
 
   const handleSubmit = async (e) => {
@@ -180,6 +182,7 @@ function AdminBikes() {
 
     const handleEdit = (bike) => {
         setEditingBikeId(bike._id);
+        setShowForm(true);
 
         setFormData({
             name: bike.name || "",
@@ -267,6 +270,15 @@ function AdminBikes() {
                 >
                     Back to Dashboard
                 </button>
+                                <button
+                    className="admin-add-bike-button"
+                    onClick={() => {
+                        resetForm();
+                        setShowForm(true);
+                    }}
+                >
+                    + Add Bike
+                </button>
             </section>
 
 
@@ -281,7 +293,8 @@ function AdminBikes() {
 
             {/* ADD / EDIT FORM */}
 
-            <section className="admin-bike-form-section">
+            {showForm && (
+    <section className="admin-bike-form-section">
 
                 <div className="admin-section-heading">
                     <div>
@@ -485,21 +498,20 @@ function AdminBikes() {
                                 : "Add Bike"}
                         </button>
 
-                        {editingBikeId && (
-                            <button
-                                type="button"
-                                className="admin-secondary-button"
-                                onClick={resetForm}
-                            >
-                                Cancel Edit
-                            </button>
-                        )}
+                        <button
+                            type="button"
+                            className="admin-secondary-button"
+                            onClick={resetForm}
+                        >
+                        Cancel
+                        </button>
 
                     </div>
 
                 </form>
 
             </section>
+        )}
 
 
             {/* ALL BIKES */}

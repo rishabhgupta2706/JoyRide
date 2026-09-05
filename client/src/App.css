@@ -2505,7 +2505,7 @@ button {
 
     padding: 70px 50px 100px;
 
-    background: #111116;
+    background: #e8f1ff;
 }
 
 
@@ -2525,6 +2525,27 @@ button {
     gap: 30px;
 }
 
+.admin-add-bike-button {
+    height: 46px;
+    padding: 0 24px;
+    border: none;
+    border-radius: 8px;
+    background: #7c3aed;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.admin-add-bike-button:hover {
+    background: #6d28d9;
+    transform: translateY(-2px);
+}
+
 .admin-bikes-label {
     margin: 0 0 12px;
 
@@ -2539,40 +2560,55 @@ button {
 .admin-bikes-header h1 {
     margin: 0 0 14px;
 
-    color: #f5f5f7;
+    color: #111827;
 
-    font-size: 52px;
-    font-weight: 700;
+    font-size: 64px;
+    font-weight: 800;
 
-    letter-spacing: -1.5px;
+    line-height: 1.05;
+
+    letter-spacing: -2px;
 }
 
 .admin-bikes-header > div > p:last-child {
     margin: 0;
 
-    color: #999;
+    color: #64748b;
 
     font-size: 18px;
 }
 
 .admin-back-button {
-    padding: 12px 20px;
+    height: 46px;
 
-    border: 1px solid #44444f;
+    padding: 0 24px;
+
+    border: 1px solid #2982b3;
     border-radius: 8px;
 
-    background: transparent;
-    color: #ffffff;
+    background: #190f0f00;
 
-    font-size: 14px;
-    font-weight: 600;
+    color: #111827;
 
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 700;
+
+    cursor: pointer;
     white-space: nowrap;
 
     transition:
         background 0.2s ease,
         border-color 0.2s ease,
-        color 0.2s ease;
+        transform 0.2s ease;
+}
+
+.admin-back-button:hover {
+    background: #f8fafc;
+
+    border-color: #a855f7;
+
+    transform: translateY(-2px);
 }
 
 .admin-back-button:hover {
@@ -2617,20 +2653,20 @@ button {
 .admin-section-heading h2 {
     margin: 0 0 8px;
 
-    color: #f5f5f7;
+    color: #111827;
 
     font-size: 34px;
-    font-weight: 700;
+    font-weight: 800;
 
     letter-spacing: -0.5px;
 }
 
-.admin-section-heading p:last-child {
+.admin-section-heading > div > p:last-child {
     margin: 0;
 
-    color: #888;
+    color: #64748b;
 
-    font-size: 15px;
+    font-size: 16px;
 }
 
 
@@ -2645,10 +2681,14 @@ button {
 
     padding: 40px;
 
-    border: 1px solid #303038;
-    border-radius: 14px;
+    border: 1px solid #dfe5ee;
+    border-radius: 18px;
 
-    background: #18181f;
+    background: #ffffff;
+
+    box-shadow: 0 14px 35px rgba(30, 41, 59, 0.06);
+
+    box-sizing: border-box;
 }
 
 .admin-bike-form {
@@ -2676,10 +2716,10 @@ button {
 }
 
 .admin-form-group label {
-    color: #c2c2cc;
+    color: #334155;
 
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .admin-form-group input,
@@ -2689,19 +2729,22 @@ button {
 
     padding: 13px 14px;
 
-    border: 1px solid #3a3a44;
+    border: 1px solid #cbd5e1;
     border-radius: 8px;
 
     outline: none;
 
-    background: #111116;
-    color: #ffffff;
+    background: #ffffff;
+    color: #111827;
 
+    font-family: inherit;
     font-size: 15px;
+
+    box-sizing: border-box;
 
     transition:
         border-color 0.2s ease,
-        background 0.2s ease;
+        box-shadow 0.2s ease;
 }
 
 .admin-form-group input,
@@ -2715,19 +2758,57 @@ button {
     min-height: 110px;
 }
 
+.admin-form-group input[type="file"] {
+    padding: 8px;
+
+    background: #f8fafc;
+
+    border: 1px solid #cbd5e1;
+
+    color: #475569;
+
+    cursor: pointer;
+}
+
+.admin-form-group input[type="file"]::file-selector-button {
+    margin-right: 12px;
+
+    padding: 8px 14px;
+
+    border: none;
+    border-radius: 6px;
+
+    background: #7c3aed;
+
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: background 0.2s ease;
+}
+
+.admin-form-group input[type="file"]::file-selector-button:hover {
+    background: #6d28d9;
+}
+
 .admin-form-group input::placeholder,
 .admin-form-group textarea::placeholder {
-    color: #666671;
+    color: #94a3b8;
 }
 
 .admin-form-group input:focus,
 .admin-form-group select:focus,
 .admin-form-group textarea:focus {
-    border-color: #a875ff;
+    border-color: #a855f7;
 
-    background: #141419;
+    background: #ffffff;
+
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.12);
 }
-
 .admin-form-actions {
     display: flex;
 
@@ -2740,17 +2821,28 @@ button {
 
 .admin-primary-button,
 .admin-secondary-button {
-    padding: 12px 22px;
+    height: 44px;
 
+    padding: 0 24px;
+
+    border: 1px solid #cbd5e1;
     border-radius: 8px;
 
+    background: #ffffff;
+
+    color: #475569;
+
+    font-family: inherit;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
+
+    cursor: pointer;
 
     transition:
         transform 0.2s ease,
         background 0.2s ease,
-        border-color 0.2s ease;
+        border-color 0.2s ease,
+        color 0.2s ease;
 }
 
 .admin-primary-button {
@@ -2771,8 +2863,8 @@ button {
 .admin-secondary-button {
     border: 1px solid #44444f;
 
-    background: transparent;
-    color: #ffffff;
+    background: transparent;  
+    color: #121212;
 }
 
 .admin-secondary-button:hover {
@@ -2810,25 +2902,30 @@ button {
 .admin-bike-card {
     overflow: hidden;
 
-    border: 1px solid #303038;
-    border-radius: 14px;
+    border: 1px solid #dfe5ee;
+    border-radius: 18px;
 
-    background: #18181f;
+    background: #ffffff;
+
+    box-shadow: 0 12px 30px rgba(30, 41, 59, 0.06);
 
     transition:
         transform 0.2s ease,
-        border-color 0.2s ease;
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 .admin-bike-card:hover {
     transform: translateY(-5px);
 
-    border-color: #a875ff;
+    border-color: #cfc0ff;
+
+    box-shadow: 0 18px 40px rgba(30, 41, 59, 0.1);
 }
 
 .admin-bike-image {
     width: 100%;
-    height: 210px;
+    height: 220px;
 
     display: flex;
     align-items: center;
@@ -2836,7 +2933,7 @@ button {
 
     overflow: hidden;
 
-    background: #25252c;
+    background: #f1f4f8;
 }
 
 .admin-bike-image img {
@@ -2877,17 +2974,19 @@ button {
 .admin-bike-card-header h3 {
     margin: 0 0 7px;
 
-    color: #ffffff;
+    color: #111827;
 
     font-size: 23px;
+    font-weight: 800;
 }
 
 .admin-bike-card-header p {
     margin: 0;
 
-    color: #999;
+    color: #64748b;
 
     font-size: 14px;
+    font-weight: 500;
 }
 
 
@@ -2896,12 +2995,12 @@ button {
 ========================================================= */
 
 .admin-bike-status {
-    padding: 6px 10px;
+    padding: 7px 12px;
 
-    border-radius: 20px;
+    border-radius: 999px;
 
     font-size: 11px;
-    font-weight: 700;
+    font-weight: 800;
 
     text-transform: capitalize;
 
@@ -2909,21 +3008,18 @@ button {
 }
 
 .admin-bike-status.available {
-    background: #17351f;
-
-    color: #73d98b;
+    background: #dcfce7;
+    color: #16a34a;
 }
 
 .admin-bike-status.maintenance {
-    background: #352c19;
-
-    color: #f0c36b;
+    background: #fef3c7;
+    color: #d97706;
 }
 
 .admin-bike-status.inactive {
-    background: #302020;
-
-    color: #ff7b7b;
+    background: #fee2e2;
+    color: #dc2626;
 }
 
 
@@ -2940,8 +3036,8 @@ button {
 
     padding: 18px 0;
 
-    border-top: 1px solid #303038;
-    border-bottom: 1px solid #303038;
+    border-top: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .admin-bike-details div {
@@ -2953,7 +3049,7 @@ button {
 }
 
 .admin-bike-details span {
-    color: #777;
+    color: #94a3b8;
 
     font-size: 10px;
     font-weight: 700;
@@ -2962,7 +3058,7 @@ button {
 }
 
 .admin-bike-details strong {
-    color: #ddddE5;
+    color: #111827;
 
     font-size: 14px;
 
@@ -2979,7 +3075,7 @@ button {
 .admin-bike-registration {
     margin-top: 18px;
 
-    color: #777;
+    color: #64748b;
 
     font-size: 12px;
 }
@@ -2987,9 +3083,9 @@ button {
 .admin-bike-registration strong {
     margin-left: 5px;
 
-    color: #bbb;
+    color: #111827;
 
-    font-weight: 600;
+    font-weight: 700;
 }
 
 
@@ -3000,7 +3096,7 @@ button {
 .admin-bike-description {
     margin: 18px 0 0;
 
-    color: #999;
+    color: #64748b;
 
     font-size: 13px;
 
@@ -3024,45 +3120,52 @@ button {
 .admin-delete-button {
     flex: 1;
 
-    padding: 10px 14px;
+    height: 42px;
 
-    border-radius: 7px;
+    border-radius: 8px;
 
-    font-size: 13px;
-    font-weight: 600;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
 
     transition:
         background 0.2s ease,
         border-color 0.2s ease,
-        color 0.2s ease;
+        transform 0.2s ease;
 }
 
 .admin-edit-button {
-    border: 1px solid #44444f;
+    border: 1px solid #cfc0ff;
 
-    background: transparent;
-    color: #ffffff;
+    background: #f5f0ff;
+
+    color: #7c3aed;
 }
 
 .admin-edit-button:hover {
-    border-color: #a875ff;
+    border-color: #a855f7;
 
-    color: #a875ff;
+    background: #ede5ff;
 
-    background: #211b2c;
+    transform: translateY(-2px);
 }
 
 .admin-delete-button {
-    border: 1px solid #543333;
+    border: 1px solid #fecaca;
 
-    background: transparent;
-    color: #ff7b7b;
+    background: #fff1f2;
+
+    color: #ef4444;
 }
 
 .admin-delete-button:hover {
-    border-color: #ff7b7b;
+    border-color: #f87171;
 
-    background: #2a1919;
+    background: #ffe4e6;
+
+    transform: translateY(-2px);
 }
 
 
@@ -3253,8 +3356,8 @@ button {
     padding: 12px 22px;
     border: 1px solid #3a3a45;
     border-radius: 8px;
-    background: transparent;
-    color: #f5f5f7;
+     /* background: transparent; */
+    /* color: #f5f5f7; */
     font-size: 15px;
     cursor: pointer;
     transition: 0.2s ease;
