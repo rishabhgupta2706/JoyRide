@@ -3300,12 +3300,14 @@ button {
 
 .admin-page {
     min-height: 100vh;
+    background: #eef5ff;
+    color: #111827;
 }
 
 .admin-page-hero {
     padding: 90px 40px 70px;
     text-align: center;
-    border-bottom: 1px solid #2a2a32;
+    border-bottom: 1px solid #dbe5f1;
 }
 
 .admin-eyebrow {
@@ -3318,13 +3320,19 @@ button {
 
 .admin-page-hero h1 {
     margin: 0;
+
     font-size: 52px;
     line-height: 1.1;
+
+    color: #0b1220;
+    font-weight: 800;
 }
 
 .admin-page-hero p:last-child {
     margin: 18px 0 0;
-    color: #92929d;
+
+    color: #64748b;
+
     font-size: 18px;
 }
 
@@ -3344,12 +3352,17 @@ button {
 
 .admin-section-header h2 {
     margin: 0;
+
     font-size: 32px;
+
+    color: #0b1220;
+    font-weight: 800;
 }
 
 .admin-section-header p {
     margin: 8px 0 0;
-    color: #92929d;
+
+    color: #64748b;
 }
 
 .admin-back-button {
@@ -11643,4 +11656,149 @@ body {
         grid-template-columns: 1fr;
     }
 
+}
+
+/* =========================================
+   MANAGE BOOKINGS - FINAL LIGHT STYLE
+========================================= */
+
+.admin-bookings-section .admin-booking-card {
+    display: block !important;
+    width: 100%;
+    min-height: 0;
+    padding: 22px 32px;
+    box-sizing: border-box;
+
+    background: #ffffff !important;
+    border: 1px solid #dfe5ee;
+    border-radius: 20px;
+
+    box-shadow: 0 10px 28px rgba(30, 41, 59, 0.06);
+
+    color: #111827;
+}
+
+.admin-bookings-section .admin-booking-card strong {
+    color: #111827 !important;
+    font-weight: 700;
+}
+
+.admin-bookings-section .admin-booking-label {
+    color: #8a9bb0 !important;
+    font-weight: 800;
+}
+
+.admin-bookings-section .admin-booking-header {
+    position: relative;
+    display: flex !important;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    min-height: 110px;
+    box-sizing: border-box;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.admin-bookings-section .admin-booking-header .admin-booking-status {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+/* .admin-bookings-section .admin-booking-header > div:first-child {
+    width: auto;
+    text-align: left;
+}
+
+.admin-bookings-section .admin-booking-header > div:last-child {
+    margin-left: auto;
+    text-align: right;
+    flex-shrink: 0;
+} */
+
+.admin-bookings-section .admin-booking-details {
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 18px 0 14px;
+    gap: 24px;
+    align-items: start;
+}
+
+.admin-bookings-section .admin-booking-details > div {
+    min-width: 0;
+    text-align: center;
+}
+
+.admin-bookings-section .admin-booking-details > div:first-child {
+    text-align: left;
+}
+
+.admin-bookings-section .admin-booking-actions {
+    display: flex !important;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.admin-bookings-section .admin-booking-card h3,
+.admin-bookings-section .admin-booking-card h2 {
+    color: #111827 !important;
+    font-size: 24px;
+    font-weight: 800;
+    margin: 0 0 5px;
+}
+
+.admin-bookings-section .admin-booking-brand {
+    margin: 0;
+    color: #94a3b8 !important;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.admin-bookings-section .admin-booking-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 96px;
+    height: 38px;
+    padding: 0 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 800;
+    box-sizing: border-box;
+}
+
+.admin-bookings-section .admin-booking-actions {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    padding-top: 18px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.admin-bookings-section .admin-booking-actions button {
+    min-width: 110px;
+    height: 40px;
+    padding: 0 18px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.admin-bookings-section .admin-booking-actions button:hover {
+    transform: translateY(-2px);
+}
+
+.admin-bookings-section .admin-booking-actions button {
+    flex: 0 0 auto;
 }
