@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
-import { useAuth } from "../context/AuthContext";
 
-function Login() {
+function Register() {
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
+
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const { login } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -19,25 +20,27 @@ function Login() {
         setLoading(true);
 
         try {
-            const response = await api.post("/users/login", {
-                email,
+            if (!name.trim() || !email.trim() || !phone.trim() || !password) {
+                setError("All fields are required.");
+                setLoading(false);
+                return;
+            }
+
+            await api.post("/users/register", {
+                name: name.trim(),
+                email: email.trim(),
+                phone: phone.trim(),
                 password
             });
 
-            const { user, token } = response.data;
-
-            login(user, token);
-
-            if (user.role === "admin") {
-                navigate("/admin");
-            } else {
-                navigate("/dashboard");
-            }
+            navigate("/login");
 
         } catch (error) {
+            console.error("REGISTER ERROR:", error);
+
             setError(
                 error.response?.data?.message ||
-                "Login failed. Please try again."
+                "Registration failed. Please try again."
             );
         } finally {
             setLoading(false);
@@ -53,25 +56,59 @@ function Login() {
                 </p>
 
                 <h1>
-                    Welcome Back
+                    Create Account
                 </h1>
 
                 <p className="auth-subtitle">
-                    Sign in to continue your ride.
+                    Create your account and start your ride.
                 </p>
 
                 <form onSubmit={handleSubmit}>
+
+                    <div className="auth-form-group">
+                        <label>Name</label>
+
+                        <input
+                            type="text"
+                            name="name"
+                            placeholder="Enter your name"
+                            value={name}
+                            onChange={(e) =>
+                                setName(e.target.value)
+                            }
+                            autoComplete="name"
+                            required
+                        />
+                    </div>
 
                     <div className="auth-form-group">
                         <label>Email</label>
 
                         <input
                             type="email"
+                            name="email"
                             placeholder="Enter your email"
                             value={email}
                             onChange={(e) =>
                                 setEmail(e.target.value)
                             }
+                            autoComplete="email"
+                            required
+                        />
+                    </div>
+
+                    <div className="auth-form-group">
+                        <label>Phone Number</label>
+
+                        <input
+                            type="tel"
+                            name="phone"
+                            placeholder="Enter your phone number"
+                            value={phone}
+                            onChange={(e) =>
+                                setPhone(e.target.value)
+                            }
+                            autoComplete="tel"
                             required
                         />
                     </div>
@@ -81,11 +118,13 @@ function Login() {
 
                         <input
                             type="password"
-                            placeholder="Enter your password"
+                            name="password"
+                            placeholder="Create a password"
                             value={password}
                             onChange={(e) =>
                                 setPassword(e.target.value)
                             }
+                            autoComplete="new-password"
                             required
                         />
                     </div>
@@ -102,19 +141,19 @@ function Login() {
                         disabled={loading}
                     >
                         {loading
-                            ? "Logging in..."
-                            : "Login"}
+                            ? "Creating Account..."
+                            : "Create Account"}
                     </button>
 
                 </form>
 
                 <p className="auth-switch">
-                    Don't have an account?{" "}
+                    Already have an account?{" "}
                     <button
                         type="button"
-                        onClick={() => navigate("/register")}
+                        onClick={() => navigate("/login")}
                     >
-                        Create Account
+                        Login
                     </button>
                 </p>
 
@@ -123,4 +162,4 @@ function Login() {
     );
 }
 
-export default Login;
+export default Register;
