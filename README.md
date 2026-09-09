@@ -2,7 +2,7 @@
 
 JoyRide is a full-stack bike rental platform built using the MERN stack. It allows users to browse bikes, check availability, make bookings, manage their bookings, and receive personalized bike recommendations using AI.
 
-The application also includes an admin panel for managing bikes, users' bookings, and booking statuses.
+The application also includes an admin panel for managing bikes, bookings, and booking statuses.
 
 ## Live Demo
 
@@ -25,7 +25,7 @@ https://github.com/rishabhgupta2706/JoyRide
 - View detailed bike information
 - Check bike availability
 - Book bikes for selected dates
-- Calculate booking price
+- Automatic booking price calculation
 - View personal booking history
 - Cancel bookings
 - AI-powered bike recommendations
@@ -59,7 +59,7 @@ The system analyzes the user's requirements and recommends suitable bikes based 
 - User requirements
 - Bike availability
 
-The recommendation system also provides explanations for why a bike was recommended.
+The system also provides explanations for why a particular bike was recommended.
 
 ---
 
@@ -130,11 +130,14 @@ The recommendation system also provides explanations for why a bike was recommen
                      ┌──────────┘      └──────────┐
                      ▼                            ▼
           ┌─────────────────────┐       ┌─────────────────────┐
-          │   MongoDB Atlas     │       │    AI Service       │
-          │      Database       │       │      Ollama         │
+          │   MongoDB Atlas     │       │    Cloudinary       │
+          │      Database       │       │    Bike Images      │
           └─────────────────────┘       └─────────────────────┘
-                               
+
+                         AI Recommendation
+                                  │
+                                  ▼
                          ┌─────────────────────┐
-                         │     Cloudinary      │
-                         │    Bike Images      │
+                         │       Ollama        │
+                         │   Local AI Service  │
                          └─────────────────────┘
